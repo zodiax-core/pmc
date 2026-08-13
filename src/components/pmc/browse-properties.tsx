@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowUpDown,
   BadgeCheck,
   Bed,
   Bath,
   Bookmark,
   Check,
+  ChevronDown,
   MapPin,
   RotateCcw,
 } from "lucide-react";
@@ -18,16 +18,117 @@ import {
 } from "@/lib/listings";
 
 type Category = "All" | "Homes" | "Plots" | "Commercial";
-type SortMode = "Popular" | "Area" | "Area size";
 
 const CATEGORIES: Category[] = ["All", "Homes", "Plots", "Commercial"];
-const SORTS: SortMode[] = ["Popular", "Area", "Area size"];
+
+const POPULAR_OPTIONS = [
+  "Small Offices",
+  "New Offices",
+  "On Instalments",
+  "Shops",
+  "Small Shops",
+  "New Shops",
+  "Running Shops",
+];
+
+const AREA_OPTIONS = ["15+", "10", "5", "3"];
 
 const CATEGORY_MATCH: Record<Exclude<Category, "All">, Listing["type"][]> = {
   Homes: ["House", "Apartment"],
   Plots: ["Plot"],
   Commercial: ["Commercial"],
 };
+
+function DrawerSelect({
+  label,
+  options,
+  selected,
+  onSelect,
+}: {
+  label: string;
+  options: string[];
+  selected: string;
+  onSelect: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDown = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    window.addEventListener("pointerdown", onDown);
+    return () => window.removeEventListener("pointerdown", onDown);
+  }, []);
+
+  const chosen = options.includes(selected) ? selected : "";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className={`morph-fast flex items-center gap-2 rounded-[12px] bg-surface-raised px-3.5 py-2 text-[13px] font-medium shadow-soft ${
+          open ? "ring-2 ring-brand/30" : "hover:bg-sand/60"
+        }`}
+      >
+        <span className={chosen ? "text-ink-soft" : "text-ink"}>
+          {label}
+          {chosen && <span className="ml-1.5 font-semibold text-ink">{chosen}</span>}
+        </span>
+        <ChevronDown
+          className={`morph-fast h-3.5 w-3.5 text-ink-soft ${open ? "rotate-180" : ""}`}
+          strokeWidth={2}
+        />
+      </button>
+
+      {/* Drawer-style panel — slides out left → right from under the trigger */}
+      <div className="absolute left-0 top-[calc(100%+10px)] z-20">
+        <div
+          className={`morph origin-left rounded-[16px] bg-surface-raised p-1.5 shadow-lift hairline ${
+            open
+              ? "pointer-events-auto translate-x-0 scale-x-100 opacity-100"
+              : "pointer-events-none -translate-x-3 scale-x-90 opacity-0"
+          }`}
+        >
+          <div
+            className={`morph grid overflow-hidden ${
+              open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="min-h-0">
+              <div className="w-[max-content] min-w-[168px] max-w-[240px] py-0.5">
+                {options.map((opt) => {
+                  const active = opt === chosen;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => {
+                        onSelect(active ? "" : opt);
+                        setOpen(false);
+                      }}
+                      className={`morph-fast flex w-full items-center gap-2 rounded-[11px] px-2.5 py-2 text-left text-[12.5px] font-medium ${
+                        active
+                          ? "bg-ink text-background"
+                          : "text-ink-soft hover:bg-sand hover:text-ink"
+                      }`}
+                    >
+                      <Check
+                        className={`h-3.5 w-3.5 shrink-0 ${active ? "opacity-100" : "opacity-0"}`}
+                        strokeWidth={2.6}
+                      />
+                      <span className="truncate">{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Saveable() {
   const [saved, setSaved] = useState(false);
@@ -81,7 +182,8 @@ export function BrowseProperties({
   onChange: (next: SearchState) => void;
 }) {
   const [category, setCategory] = useState<Category>("All");
-  const [sort, setSort] = useState<SortMode>("Popular");
+  const [popular, setPopular] = useState("");
+  const [areaSize, setAreaSize] = useState("");
 
   const results = useMemo(() => {
     const rs = filterListings(search).filter((l) =>
@@ -90,11 +192,10 @@ export function BrowseProperties({
         : CATEGORY_MATCH[category as Exclude<Category, "All">].includes(l.type),
     );
     return [...rs].sort((a, b) => {
-      if (sort === "Popular") return b.popularity - a.popularity;
-      if (sort === "Area size") return a.sqft - b.sqft;
-      return a.place.localeCompare(b.place);
+      if (areaSize) return a.sqft - b.sqft;
+      return b.popularity - a.popularity;
     });
-  }, [search, category, sort]);
+  }, [search, category, areaSize]);
 
   const filtered = hasActiveFilters(search);
 
@@ -160,19 +261,19 @@ export function BrowseProperties({
 
         <div className="mx-1 hidden h-5 w-px bg-border sm:block" />
 
-        <div className="flex items-center gap-1.5">
-          <ArrowUpDown className="h-3.5 w-3.5 text-ink-soft" strokeWidth={2} />
-          {SORTS.map((s) => (
-            <button
-              key={s}
-              onClick={() => setSort(s)}
-              className={`morph-fast rounded-[10px] px-3 py-1.5 text-[12.5px] font-medium ${
-                sort === s ? "bg-sand text-ink" : "text-ink-soft hover:text-ink"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          <DrawerSelect
+            label="Popular"
+            options={POPULAR_OPTIONS}
+            selected={popular}
+            onSelect={setPopular}
+          />
+          <DrawerSelect
+            label="Area"
+            options={AREA_OPTIONS}
+            selected={areaSize}
+            onSelect={setAreaSize}
+          />
         </div>
       </div>
 

@@ -13,3 +13,15 @@ export function scrollToId(id: string) {
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
   }
 }
+
+export function lockScroll() {
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+  lenis?.stop();
+}
+
+export function unlockScroll() {
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
+  lenis?.start();
+}

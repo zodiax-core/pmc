@@ -7,6 +7,8 @@ import roomLiving from "@/assets/room-living.jpg";
 import roomKitchen from "@/assets/room-kitchen.jpg";
 import roomBedroom from "@/assets/room-bedroom.jpg";
 
+export const DEALS = ["Buy", "Rent"] as const;
+
 export const AREAS = ["DHA Phase 6", "Gulberg III", "Clifton", "F-7", "Bahria Town", "Askari X"];
 
 export const BEDS = ["Any", "1+", "2+", "3+", "4+", "5+"];
@@ -20,6 +22,7 @@ export type SearchState = {
   beds: string;
   price: string;
   type: string;
+  deal: "Buy" | "Rent";
 };
 
 export const DEFAULT_SEARCH: SearchState = {
@@ -27,6 +30,7 @@ export const DEFAULT_SEARCH: SearchState = {
   beds: "Any",
   price: "Any price",
   type: "Any",
+  deal: "Buy",
 };
 
 export type Listing = {

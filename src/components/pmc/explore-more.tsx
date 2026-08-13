@@ -75,27 +75,28 @@ export function ExploreMore() {
         <span className="meta">Calculators · guides · market data</span>
       </div>
 
-      <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {TOOLS.map((t) => {
           const Icon = t.icon;
           return (
             <a
               key={t.title}
               href={t.href === "#" ? "#tools" : t.href}
-              className="morph-fast group flex items-start gap-3.5 rounded-[20px] bg-surface-raised p-4 shadow-soft hover:bg-ink hover:shadow-lift"
+              className="morph-fast group flex flex-col items-center justify-center gap-3 rounded-[22px] bg-surface-raised p-5 text-center shadow-soft hover:bg-ink hover:shadow-lift sm:flex-row sm:items-start sm:justify-start sm:gap-3.5 sm:rounded-[20px] sm:p-4 sm:text-left"
             >
-              <span className="morph-fast flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] bg-sand text-ink group-hover:bg-brand group-hover:text-brand-foreground">
-                <Icon className="h-4.5 w-4.5" strokeWidth={1.9} />
+              <span className="morph-fast flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-sand text-ink group-hover:bg-brand group-hover:text-brand-foreground sm:h-10 sm:w-10 sm:rounded-[13px]">
+                <Icon className="h-6 w-6" strokeWidth={1.9} sm:hidden />
+                <Icon className="hidden h-4.5 w-4.5 sm:block" strokeWidth={1.9} />
               </span>
               <span className="min-w-0">
-                <span className="flex items-center gap-1 text-[14px] font-semibold text-ink group-hover:text-background">
+                <span className="flex items-center justify-center gap-1 text-[13.5px] font-semibold leading-snug text-ink group-hover:text-background sm:justify-start sm:text-[14px]">
                   {t.title}
                   <ArrowUpRight
-                    className="morph-fast h-3.5 w-3.5 text-brand opacity-0 group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-background"
+                    className="morph-fast h-3.5 w-3.5 shrink-0 text-brand opacity-0 group-hover:translate-x-0.5 group-hover:opacity-100 group-hover:text-background"
                     strokeWidth={2.4}
                   />
                 </span>
-                <span className="mt-0.5 block text-[12px] leading-snug text-ink-soft group-hover:text-background/60">
+                <span className="mt-0.5 block text-[11.5px] leading-snug text-ink-soft group-hover:text-background/60 sm:mt-0.5 sm:text-[12px]">
                   {t.desc}
                 </span>
               </span>

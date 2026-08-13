@@ -76,7 +76,7 @@ export function ServiceRibbon() {
           <span className="meta">Vetted providers · fixed PMC rates</span>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 grid grid-cols-2 gap-2 lg:flex lg:flex-wrap lg:gap-2">
           {SERVICES.map((s) => {
             const isOpen = active === s.id;
             const Icon = s.icon;
@@ -86,24 +86,28 @@ export function ServiceRibbon() {
                 onMouseEnter={() => setActive(s.id)}
                 onMouseLeave={() => setActive(null)}
                 onClick={() => setActive(isOpen ? null : s.id)}
-                className={`morph overflow-hidden rounded-[16px] bg-surface-raised ${
-                  isOpen ? "w-full shadow-lift sm:w-[320px]" : "w-[132px] shadow-soft"
+                className={`morph overflow-hidden rounded-[18px] bg-surface-raised lg:rounded-[16px] ${
+                  isOpen
+                    ? "col-span-2 w-full shadow-lift lg:col-span-auto lg:w-[320px]"
+                    : "w-full shadow-soft lg:w-[132px]"
                 }`}
               >
-                <div className="flex items-center gap-2.5 px-3.5 py-3">
+                <div className="flex items-center justify-center gap-2.5 px-3.5 py-4 lg:justify-start lg:py-3">
                   <span
-                    className={`morph-fast flex h-8 w-8 items-center justify-center rounded-[10px] ${
+                    className={`morph-fast flex h-12 w-12 items-center justify-center rounded-[14px] lg:h-8 lg:w-8 lg:rounded-[10px] ${
                       isOpen ? "bg-brand text-brand-foreground" : "bg-sand text-ink"
                     }`}
                   >
-                    <Icon className="h-4 w-4" strokeWidth={1.9} />
+                    <Icon className="h-5.5 w-5.5 lg:h-4 lg:w-4" strokeWidth={1.9} />
                   </span>
-                  <span className="text-[13.5px] font-medium text-ink">{s.label}</span>
+                  <span className="text-center text-[14.5px] font-semibold text-ink lg:text-left lg:text-[13.5px] lg:font-medium">
+                    {s.label}
+                  </span>
                 </div>
 
                 <div className={`morph grid ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                   <div className="min-h-0 overflow-hidden">
-                    <div className="border-t border-border px-3.5 py-3">
+                    <div className="border-t border-border px-4 py-3.5 lg:px-3.5 lg:py-3">
                       <div className="flex items-end justify-between gap-3">
                         <div>
                           <div className="meta">Starting from</div>

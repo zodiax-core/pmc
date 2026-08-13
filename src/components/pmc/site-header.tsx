@@ -88,10 +88,21 @@ export function SiteHeader() {
   };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = window.scrollY;
+        setScrolled(y > 24);
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   useEffect(() => {
@@ -129,138 +140,142 @@ export function SiteHeader() {
   return (
     <header data-nav className="fixed inset-x-0 top-0 z-50 px-4 pt-3 sm:px-6">
       <div
-        className={`morph mx-auto flex max-w-[1240px] items-center gap-5 rounded-[18px] px-4 py-2.5 ${
-          scrolled || open || mobileOpen
-            ? "bg-surface-raised/85 shadow-soft backdrop-blur-md"
+        className={`morph relative mx-auto flex max-w-[1240px] items-center rounded-[18px] px-4 py-2.5 ${
+          scrolled || open !== null || mobileOpen
+            ? "bg-white shadow-soft hairline"
             : "bg-transparent"
         }`}
       >
-        {/* Desktop dropdown nav — overlays, never pushes content */}
-        <nav className="hidden items-center gap-0.5 md:flex">
-          {NAV.map((g) => (
-            <div
-              key={g.label}
-              className="relative"
-              onMouseEnter={() => openOn(g.label)}
-              onMouseLeave={closeAfter}
-            >
-              <button
-                onClick={() => (open === g.label ? closeAfter() : openOn(g.label))}
-                aria-expanded={open === g.label}
-                className={`morph-fast flex items-center gap-1 rounded-[10px] px-3 py-1.5 text-[13.5px] font-medium ${
-                  open === g.label
-                    ? "bg-sand text-ink"
-                    : "text-ink-soft hover:bg-sand hover:text-ink"
-                }`}
+        <div className="flex w-full items-center gap-5">
+          {/* Desktop dropdown nav — overlays, never pushes content */}
+          <nav className="hidden items-center gap-0.5 md:flex">
+            {NAV.map((g) => (
+              <div
+                key={g.label}
+                className="relative"
+                onMouseEnter={() => openOn(g.label)}
+                onMouseLeave={closeAfter}
               >
-                {g.label}
-                <ChevronDown
-                  className={`morph-fast h-3.5 w-3.5 ${open === g.label ? "rotate-180" : ""}`}
-                  strokeWidth={2}
+                <button
+                  onClick={() => (open === g.label ? closeAfter() : openOn(g.label))}
+                  aria-expanded={open === g.label}
+                  className={`morph-fast flex items-center gap-1 rounded-[10px] px-3 py-1.5 text-[13.5px] font-medium ${
+                    open === g.label
+                      ? "bg-sand text-ink"
+                      : "text-ink-soft hover:bg-sand hover:text-ink"
+                  }`}
+                >
+                  {g.label}
+                  <ChevronDown
+                    className={`morph-fast h-3.5 w-3.5 ${open === g.label ? "rotate-180" : ""}`}
+                    strokeWidth={2}
+                  />
+                </button>
+
+                {/* invisible bridge so the cursor crossing the gap keeps the menu open */}
+                <span
+                  aria-hidden
+                  className="absolute -bottom-3 left-0 right-0 h-3 rounded-b-[10px]"
                 />
+
+                <div
+                  className={`morph absolute left-1/2 top-[calc(100%+12px)] w-72 -translate-x-1/2 rounded-[18px] bg-white p-2 shadow-lift hairline ${
+                    open === g.label
+                      ? "pointer-events-auto translate-y-0 opacity-100"
+                      : "pointer-events-none translate-y-2 opacity-0"
+                  }`}
+                >
+                  <div
+                    key={open === g.label ? g.label : "none"}
+                    className={
+                      open === g.label ? "animate-in fade-in slide-in-from-top-2 duration-300" : ""
+                    }
+                  >
+                    <div className="flex items-baseline justify-between gap-2 px-2.5 pb-2 pt-1">
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                        {g.label}
+                      </span>
+                      <span className="truncate text-[10px] text-ink-soft/70">{g.tagline}</span>
+                    </div>
+                    {g.links.map((l) => (
+                      <a
+                        key={l.label}
+                        href={l.target ?? "#"}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          go(l.target);
+                        }}
+                        className="morph-fast group flex items-center gap-3 rounded-[12px] px-2.5 py-2 hover:bg-sand"
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-[13px] font-medium text-ink">{l.label}</span>
+                          {l.desc && (
+                            <span className="block truncate text-[11.5px] text-ink-soft">
+                              {l.desc}
+                            </span>
+                          )}
+                        </span>
+                        <ChevronRight
+                          className="ml-auto h-3.5 w-3.5 shrink-0 text-ink-soft/40 group-hover:translate-x-0.5 group-hover:text-brand"
+                          strokeWidth={2}
+                        />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </nav>
+
+          <div className="ml-auto flex items-center gap-1.5">
+            <button
+              aria-label="Search"
+              className="morph-fast flex h-9 w-9 items-center justify-center rounded-[11px] text-ink-soft hover:bg-sand hover:text-ink"
+            >
+              <Search className="h-4 w-4" strokeWidth={1.9} />
+            </button>
+            <button className="morph-fast hidden rounded-[11px] px-3 py-1.5 text-[13.5px] font-medium text-ink-soft hover:text-ink sm:block">
+              Sign In
+            </button>
+            <button className="morph-fast hidden rounded-[12px] bg-ink px-3.5 py-2 text-[13px] font-semibold text-background hover:bg-brand sm:block">
+              List Property
+            </button>
+
+            {/* Mobile menu */}
+            <div className="relative md:hidden">
+              <button
+                aria-label="Menu"
+                aria-expanded={mobileOpen}
+                onClick={() => setMobileOpen((o) => !o)}
+                className="morph-fast flex h-9 w-9 items-center justify-center rounded-[11px] text-ink-soft hover:bg-sand hover:text-ink"
+              >
+                {mobileOpen ? (
+                  <X className="h-4 w-4" strokeWidth={1.9} />
+                ) : (
+                  <Menu className="h-4 w-4" strokeWidth={1.9} />
+                )}
               </button>
 
-              {/* invisible bridge so the cursor crossing the gap keeps the menu open */}
-              <span
-                aria-hidden
-                className="absolute -bottom-3 left-0 right-0 h-3 rounded-b-[10px]"
-              />
-
               <div
-                className={`morph absolute left-1/2 top-[calc(100%+12px)] w-72 -translate-x-1/2 rounded-[18px] bg-surface-raised p-2 shadow-lift hairline ${
-                  open === g.label
+                className={`morph absolute right-0 top-[calc(100%+16px)] max-h-[min(75vh,560px)] w-[min(86vw,340px)] overflow-y-auto rounded-[18px] bg-white p-2 shadow-lift hairline ${
+                  mobileOpen
                     ? "pointer-events-auto translate-y-0 opacity-100"
                     : "pointer-events-none translate-y-2 opacity-0"
                 }`}
               >
-                <div
-                  key={open === g.label ? g.label : "none"}
-                  className={
-                    open === g.label ? "animate-in fade-in slide-in-from-top-2 duration-300" : ""
-                  }
-                >
-                  <div className="flex items-baseline justify-between gap-2 px-2.5 pb-2 pt-1">
-                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
-                      {g.label}
-                    </span>
-                    <span className="truncate text-[10px] text-ink-soft/70">{g.tagline}</span>
-                  </div>
-                  {g.links.map((l) => (
-                    <a
-                      key={l.label}
-                      href={l.target ?? "#"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        go(l.target);
-                      }}
-                      className="morph-fast group flex items-center gap-3 rounded-[12px] px-2.5 py-2 hover:bg-sand"
-                    >
-                      <span className="min-w-0">
-                        <span className="block text-[13px] font-medium text-ink">{l.label}</span>
-                        {l.desc && (
-                          <span className="block truncate text-[11.5px] text-ink-soft">
-                            {l.desc}
-                          </span>
-                        )}
-                      </span>
-                      <ChevronRight
-                        className="ml-auto h-3.5 w-3.5 shrink-0 text-ink-soft/40 group-hover:translate-x-0.5 group-hover:text-brand"
-                        strokeWidth={2}
-                      />
-                    </a>
+                <div>
+                  {NAV.map((g) => (
+                    <MobileGroup key={g.label} group={g} onGo={go} />
                   ))}
+                  <div className="mt-1 flex gap-1.5 border-t border-border pt-2">
+                    <button className="morph-fast flex-1 rounded-[11px] px-3 py-2 text-[13px] font-medium text-ink-soft hover:text-ink">
+                      Sign In
+                    </button>
+                    <button className="morph-fast flex-1 rounded-[11px] bg-ink px-3 py-2 text-[13px] font-semibold text-background hover:bg-brand">
+                      List Property
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-1.5">
-          <button
-            aria-label="Search"
-            className="morph-fast flex h-9 w-9 items-center justify-center rounded-[11px] text-ink-soft hover:bg-sand hover:text-ink"
-          >
-            <Search className="h-4 w-4" strokeWidth={1.9} />
-          </button>
-          <button className="morph-fast hidden rounded-[11px] px-3 py-1.5 text-[13.5px] font-medium text-ink-soft hover:text-ink sm:block">
-            Sign In
-          </button>
-          <button className="morph-fast hidden rounded-[12px] bg-ink px-3.5 py-2 text-[13px] font-semibold text-background hover:bg-brand sm:block">
-            List Property
-          </button>
-
-          {/* Mobile menu */}
-          <div className="relative md:hidden">
-            <button
-              aria-label="Menu"
-              aria-expanded={mobileOpen}
-              onClick={() => setMobileOpen((o) => !o)}
-              className="morph-fast flex h-9 w-9 items-center justify-center rounded-[11px] text-ink-soft hover:bg-sand hover:text-ink"
-            >
-              {mobileOpen ? (
-                <X className="h-4 w-4" strokeWidth={1.9} />
-              ) : (
-                <Menu className="h-4 w-4" strokeWidth={1.9} />
-              )}
-            </button>
-
-            <div
-              className={`morph absolute right-0 top-[calc(100%+16px)] max-h-[min(75vh,560px)] w-[min(86vw,340px)] overflow-y-auto rounded-[18px] bg-surface-raised p-2 shadow-lift hairline ${
-                mobileOpen
-                  ? "pointer-events-auto translate-y-0 opacity-100"
-                  : "pointer-events-none translate-y-2 opacity-0"
-              }`}
-            >
-              {NAV.map((g) => (
-                <MobileGroup key={g.label} group={g} onGo={go} />
-              ))}
-              <div className="mt-1 flex gap-1.5 border-t border-border pt-2">
-                <button className="morph-fast flex-1 rounded-[11px] px-3 py-2 text-[13px] font-medium text-ink-soft hover:text-ink">
-                  Sign In
-                </button>
-                <button className="morph-fast flex-1 rounded-[11px] bg-ink px-3 py-2 text-[13px] font-semibold text-background hover:bg-brand">
-                  List Property
-                </button>
               </div>
             </div>
           </div>

@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown } from "lucide-react";
-import { AREAS, BEDS, PRICES, TYPES, countMatches, type SearchState } from "@/lib/listings";
+import { useEffect, useState } from "react";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { BEDS, DEALS, PRICES, countMatches, type SearchState } from "@/lib/listings";
+import { FilterDrawer } from "./filter-drawer";
 
-type Field = "area" | "beds" | "price" | "type" | null;
+type Field = "deal" | "beds" | "price" | null;
 
 const PILLS = [
   { id: "projects", label: "Projects" },
@@ -19,20 +20,28 @@ export function SearchPanel({
   onSearch?: () => void;
 }) {
   const [open, setOpen] = useState<Field>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const matches = countMatches(value);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDrawerOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const options: Record<
     Exclude<Field, null>,
     { list: string[]; chosen: string; pick: (v: string) => void }
   > = {
-    area: {
-      list: AREAS,
-      chosen: value.area || "Anywhere",
-      pick: (v) => onChange({ ...value, area: v }),
+    deal: {
+      list: [...DEALS],
+      chosen: value.deal,
+      pick: (v) => onChange({ ...value, deal: v as "Buy" | "Rent" }),
     },
     beds: { list: BEDS, chosen: value.beds, pick: (v) => onChange({ ...value, beds: v }) },
     price: { list: PRICES, chosen: value.price, pick: (v) => onChange({ ...value, price: v }) },
-    type: { list: TYPES, chosen: value.type, pick: (v) => onChange({ ...value, type: v }) },
   };
 
   const Segment = ({
@@ -96,20 +105,23 @@ export function SearchPanel({
         }`}
       >
         <div className="flex items-stretch gap-0.5">
-          <Segment
-            id="area"
-            label="Where"
-            value={value.area}
-            placeholder="Enter city or area"
-            grow
-          />
+          <Segment id="deal" label="Type" value={value.deal} grow />
           <span className="my-2 w-px bg-border" />
           <Segment id="beds" label="Beds" value={value.beds} />
           <span className="my-2 hidden w-px bg-border sm:block" />
           <div className="hidden sm:contents">
             <Segment id="price" label="Price" value={value.price} />
           </div>
-          <Segment id="type" label="Type" value={value.type} />
+          <button
+            aria-label="Open filters"
+            aria-expanded={drawerOpen}
+            onClick={() => setDrawerOpen(true)}
+            className={`morph-fast ml-0.5 flex h-auto w-11 shrink-0 items-center justify-center rounded-[14px] ${
+              drawerOpen ? "bg-ink text-background" : "bg-sand text-ink hover:bg-sand-deep"
+            }`}
+          >
+            <SlidersHorizontal className="h-4 w-4" strokeWidth={2.1} />
+          </button>
           <button
             aria-label="Search properties"
             onClick={onSearch}
@@ -127,56 +139,28 @@ export function SearchPanel({
             <div className="rounded-[15px] bg-sand/60 p-2">
               {open && (
                 <div key={open} className="animate-in fade-in slide-in-from-top-1 duration-300">
-                  {open === "area" && (
-                    <>
-                      <input
-                        value={value.area}
-                        onChange={(e) => onChange({ ...value, area: e.target.value })}
-                        placeholder="Try 'DHA Phase 6', 'Gulberg', 'Clifton'…"
-                        className="w-full rounded-[11px] bg-surface-raised px-3 py-2.5 text-[13px] font-medium text-ink outline-none placeholder:text-ink-soft/70 focus:ring-2 focus:ring-brand/30"
-                      />
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {AREAS.map((opt) => (
-                          <span
-                            key={opt}
-                            onClick={() => onChange({ ...value, area: opt })}
-                            className={`morph-fast flex cursor-pointer select-none items-center gap-1.5 rounded-[10px] px-2.5 py-1.5 text-[12.5px] font-medium ${
-                              value.area === opt
-                                ? "bg-ink text-background"
-                                : "bg-surface-raised text-ink-soft hover:text-ink"
-                            }`}
-                          >
-                            {value.area === opt && <Check className="h-3 w-3" strokeWidth={2.6} />}
-                            {opt}
-                          </span>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  {open !== "area" && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {options[open]!.list.map((opt) => {
-                        const active = options[open!].chosen === opt;
-                        return (
-                          <button
-                            key={opt}
-                            onClick={() => {
-                              options[open!].pick(opt);
-                              setOpen(null);
-                            }}
-                            className={`morph-fast flex items-center gap-1.5 rounded-[10px] px-2.5 py-1.5 text-[12.5px] font-medium ${
-                              active
-                                ? "bg-ink text-background"
-                                : "bg-surface-raised text-ink-soft hover:text-ink"
-                            }`}
-                          >
-                            {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-1.5">
+                    {options[open]!.list.map((opt) => {
+                      const active = options[open!].chosen === opt;
+                      return (
+                        <button
+                          key={opt}
+                          onClick={() => {
+                            options[open!].pick(opt);
+                            setOpen(null);
+                          }}
+                          className={`morph-fast flex items-center gap-1.5 rounded-[10px] px-2.5 py-1.5 text-[12.5px] font-medium ${
+                            active
+                              ? "bg-ink text-background"
+                              : "bg-surface-raised text-ink-soft hover:text-ink"
+                          }`}
+                        >
+                          {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
@@ -187,6 +171,14 @@ export function SearchPanel({
           </div>
         </div>
       </div>
+
+      <FilterDrawer
+        value={value}
+        onChange={onChange}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSearch={onSearch}
+      />
     </div>
   );
 }

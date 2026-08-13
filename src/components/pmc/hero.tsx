@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BadgeCheck, Boxes } from "lucide-react";
-import heroHouse from "@/assets/hero-house.jpg";
+import heroHouse from "@/assets/prop-large.jpg";
 import { SearchPanel } from "./search-panel";
 import { scrollToId } from "@/lib/scroll";
 import type { SearchState } from "@/lib/listings";
@@ -115,7 +115,7 @@ export function Hero({
           <img
             ref={imgRef}
             src={heroHouse}
-            alt="Modern travertine and timber residence in DHA Phase 6, Lahore"
+            alt="Contemporary villa with deep terrace in DHA Phase 6, Lahore"
             width={1200}
             height={1504}
             className="h-full w-full object-cover will-change-transform"
