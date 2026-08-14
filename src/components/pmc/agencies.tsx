@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowUpRight, BadgeCheck, Building2, ListChecks, MapPin, Star } from "lucide-react";
+import { LazyImage } from "./image";
 
 const AGENCIES = [
   {
@@ -80,11 +81,11 @@ export function Agencies() {
             className="group relative flex flex-col overflow-hidden rounded-[22px] bg-surface-raised shadow-soft transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lift"
           >
             {/* Banner — sits behind the logo, text and everything else */}
-            <img
+            <LazyImage
               src={a.banner}
               alt=""
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full"
+              imgClassName="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/15 to-ink/70" />
             {a.badge && (

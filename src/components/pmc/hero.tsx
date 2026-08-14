@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BadgeCheck, Boxes } from "lucide-react";
-import heroHouse from "@/assets/hero-house-img.jpg";
+import heroHouse from "@/assets/hero-house-opt.jpg";
 import { SearchPanel } from "./search-panel";
 import { scrollToId } from "@/lib/scroll";
 import type { SearchState } from "@/lib/listings";
@@ -118,6 +118,8 @@ export function Hero({
             alt="Modern travertine and timber residence in DHA Phase 6, Lahore"
             width={1200}
             height={1504}
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover will-change-transform"
           />
 

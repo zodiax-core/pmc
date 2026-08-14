@@ -1,13 +1,15 @@
-import { ArrowUpRight, Building2, MapPin, TrendingUp } from "lucide-react";
+import { ArrowUpRight, MapPin, TrendingUp } from "lucide-react";
+import { LazyImage, BrandLogo } from "./image";
 import propMed1 from "@/assets/prop-med-1.jpg";
 import propMed2 from "@/assets/prop-med-2.jpg";
 import roomKitchen from "@/assets/room-kitchen.jpg";
-import heroHouse from "@/assets/hero-house-img.jpg";
+import heroHouse from "@/assets/hero-house-opt.jpg";
 
 const PROJECTS = [
   {
     name: "Canal View Residences",
     developer: "Skyline Developers",
+    logo: "https://logo.clearbit.com/skyline.com.pk",
     city: "Lahore",
     start: "PKR 9.5M",
     status: "Pre-launch",
@@ -16,6 +18,7 @@ const PROJECTS = [
   {
     name: "Bahria Heights Tower",
     developer: "Bahria Town",
+    logo: "https://logo.clearbit.com/bahria.com",
     city: "Karachi",
     start: "PKR 12.0M",
     status: "Booking open",
@@ -24,6 +27,7 @@ const PROJECTS = [
   {
     name: "Margalla Greens",
     developer: "Hillmark Builders",
+    logo: "https://logo.clearbit.com/hillmark.com",
     city: "Islamabad",
     start: "PKR 7.8M",
     status: "Under construction",
@@ -32,6 +36,7 @@ const PROJECTS = [
   {
     name: "Ravi Waterfront",
     developer: "Delta Estates",
+    logo: "https://logo.clearbit.com/deltaestates.com",
     city: "Lahore",
     start: "PKR 5.2M",
     status: "Launching soon",
@@ -61,13 +66,11 @@ export function Projects() {
             className="group overflow-hidden rounded-[22px] bg-surface-raised shadow-soft"
           >
             <div className="relative overflow-hidden">
-              <img
+              <LazyImage
                 src={p.img}
                 alt={`${p.name} — ${p.city}`}
-                width={800}
-                height={600}
-                loading="lazy"
-                className="morph aspect-[16/10] w-full object-cover group-hover:scale-[1.04]"
+                className="aspect-[16/10] w-full"
+                imgClassName="group-hover:scale-[1.04]"
               />
               <span className="absolute left-3 top-3 rounded-[9px] bg-ink/85 px-2 py-1 text-[10px] font-semibold tracking-[0.08em] text-background backdrop-blur-sm">
                 {p.status.toUpperCase()}
@@ -75,8 +78,13 @@ export function Projects() {
             </div>
             <div className="p-4">
               <div className="flex items-center gap-1.5">
-                <Building2 className="h-3 w-3 text-ink-soft" strokeWidth={2} />
-                <span className="meta">{p.developer}</span>
+                <BrandLogo
+                  src={p.logo}
+                  name={p.developer}
+                  round
+                  className="h-5 w-5 shrink-0 bg-sand"
+                />
+                <span className="meta truncate">{p.developer}</span>
               </div>
               <h3 className="mt-1 text-[15.5px] font-semibold text-ink">{p.name}</h3>
               <div className="mt-1 flex items-center gap-1.5 text-[12px] text-ink-soft">

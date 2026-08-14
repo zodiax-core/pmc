@@ -13,9 +13,11 @@ import { Management } from "@/components/pmc/management";
 import { AppCta, Partners } from "@/components/pmc/bottom-ctas";
 import { SiteFooter } from "@/components/pmc/site-footer";
 import { DEFAULT_SEARCH, type SearchState } from "@/lib/listings";
+import heroHouse from "@/assets/hero-house-opt.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [{ rel: "preload", as: "image", href: heroHouse }],
     meta: [
       { title: "PMC — Inspected homes, digital twins, property management" },
       {

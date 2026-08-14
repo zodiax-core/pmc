@@ -2,7 +2,7 @@ import propLarge from "@/assets/prop-large.jpg";
 import propMed1 from "@/assets/prop-med-1.jpg";
 import propMed2 from "@/assets/prop-med-2.jpg";
 import propSmall from "@/assets/prop-small.jpg";
-import heroHouse from "@/assets/hero-house-img.jpg";
+import heroHouse from "@/assets/hero-house-opt.jpg";
 import roomLiving from "@/assets/room-living.jpg";
 import roomKitchen from "@/assets/room-kitchen.jpg";
 import roomBedroom from "@/assets/room-bedroom.jpg";

@@ -4,7 +4,6 @@ import {
   Bed,
   Bath,
   Bookmark,
-  CalendarCheck,
   Check,
   ChevronDown,
   LayoutGrid,
@@ -15,6 +14,7 @@ import {
   Phone,
   RotateCcw,
 } from "lucide-react";
+import { LazyImage, BrandLogo } from "./image";
 import {
   LISTINGS,
   filterListings,
@@ -150,14 +150,9 @@ function SellerBadge({ seller }: { seller?: { name: string; logo: string } }) {
   return (
     <span
       title={`Sold by ${seller.name}`}
-      className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface-raised p-1 shadow-lift ring-2 ring-background/70"
+      className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-surface-raised p-0.5 shadow-lift ring-2 ring-background/70"
     >
-      <img
-        src={seller.logo}
-        alt={seller.name}
-        loading="lazy"
-        className="h-full w-full object-contain"
-      />
+      <BrandLogo src={seller.logo} name={seller.name} round />
     </span>
   );
 }
@@ -186,16 +181,9 @@ function ListingActions() {
       >
         <WhatsAppIcon className="h-4 w-4" />
       </button>
-      <button
-        aria-label="Email seller"
-        title="Email"
-        className="morph-fast flex h-9 w-9 items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink"
-      >
-        <Mail className="h-4 w-4" strokeWidth={2} />
-      </button>
       <button className="morph-fast ml-auto flex h-9 items-center gap-1.5 rounded-[11px] bg-ink px-3.5 text-[12.5px] font-semibold text-background hover:bg-brand">
-        <CalendarCheck className="h-3.5 w-3.5" strokeWidth={2.2} />
-        Reserve
+        <Mail className="h-3.5 w-3.5" strokeWidth={2.2} />
+        Email
       </button>
     </div>
   );
@@ -214,17 +202,13 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
           grid ? "" : "w-full shrink-0 rounded-[16px] sm:w-52"
         }`}
       >
-        <img
+        <LazyImage
           src={p.img}
           alt={p.alt}
-          width={800}
-          height={600}
-          loading="lazy"
-          className={`h-full w-full object-cover ${
-            grid
-              ? "morph aspect-[4/3] group-hover:scale-[1.04]"
-              : "aspect-[16/10] sm:aspect-auto sm:h-40"
-          }`}
+          className="h-full w-full"
+          imgClassName={
+            grid ? "aspect-[4/3] group-hover:scale-[1.04]" : "aspect-[16/10] sm:aspect-auto sm:h-40"
+          }
         />
         {p.badge && (
           <span
@@ -340,7 +324,7 @@ export function BrowseProperties({
     const measure = () => {
       const nav = catRef.current;
       const btn = nav?.querySelector<HTMLElement>('[data-cat="true"]');
-      if (nav && btn) setPill({ left: btn.offsetLeft - 4, width: btn.offsetWidth });
+      if (nav && btn) setPill({ left: btn.offsetLeft, width: btn.offsetWidth });
     };
     measure();
     window.addEventListener("resize", measure);
@@ -472,7 +456,8 @@ export function BrowseProperties({
 
       {results.length > 0 ? (
         <div
-          className={`mt-6 grid gap-4 ${
+          key={view}
+          className={`animate-in fade-in duration-300 mt-6 grid gap-4 ${
             view === "grid" ? "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : ""
           }`}
         >
