@@ -158,7 +158,7 @@ function SellerBadge({ seller }: { seller?: { name: string; logo: string } }) {
 }
 
 function ListingActions({ compact }: { compact?: boolean }) {
-  const iconBtn = compact ? "h-8 w-8" : "h-9 w-9";
+  const iconBtn = compact ? "h-7 w-7" : "h-9 w-9";
   return (
     <div className={`flex items-center ${compact ? "gap-1" : "gap-1.5"}`}>
       <button
@@ -166,28 +166,28 @@ function ListingActions({ compact }: { compact?: boolean }) {
         title="Message"
         className={`morph-fast flex ${iconBtn} items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink`}
       >
-        <MessageCircle className="h-4 w-4" strokeWidth={2} />
+        <MessageCircle className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} strokeWidth={2} />
       </button>
       <button
         aria-label="Call seller"
         title="Call"
         className={`morph-fast flex ${iconBtn} items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink`}
       >
-        <Phone className="h-4 w-4" strokeWidth={2} />
+        <Phone className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} strokeWidth={2} />
       </button>
       <button
         aria-label="Chat on WhatsApp"
         title="WhatsApp"
         className={`morph-fast flex ${iconBtn} items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink`}
       >
-        <WhatsAppIcon className="h-4 w-4" />
+        <WhatsAppIcon className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} />
       </button>
       <button
         className={`morph-fast ml-auto flex items-center gap-1.5 rounded-[11px] bg-ink text-background hover:bg-brand ${
-          compact ? "h-8 px-3 text-[12px]" : "h-9 px-3.5 text-[12.5px]"
+          compact ? "h-7 px-2.5 text-[11.5px]" : "h-9 px-3.5 text-[12.5px]"
         } font-semibold`}
       >
-        <Mail className="h-3.5 w-3.5" strokeWidth={2.2} />
+        <Mail className={compact ? "h-3 w-3" : "h-3.5 w-3.5"} strokeWidth={2.2} />
         Email
       </button>
     </div>
@@ -204,7 +204,7 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
     >
       <div
         className={`relative shrink-0 overflow-hidden ${
-          grid ? "" : "w-36 self-stretch rounded-[14px] sm:w-56"
+          grid ? "" : "w-40 self-stretch rounded-[14px] sm:w-72"
         }`}
       >
         <LazyImage
@@ -251,11 +251,11 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
           )}
         </div>
         <div
-          className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[17px] sm:text-[19px]"}`}
+          className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[16px] sm:text-[18px]"}`}
         >
           {p.price}
         </div>
-        <div className="mt-1.5 flex items-center gap-1.5 text-[11px] font-medium text-ink-soft sm:mt-2 sm:gap-3 sm:text-[12px]">
+        <div className="mt-1.5 flex items-center gap-1.5 text-[10.5px] font-medium text-ink-soft sm:mt-2 sm:gap-3 sm:text-[11.5px]">
           {p.beds > 0 && (
             <span className="flex items-center gap-1">
               <Bed className="h-3.5 w-3.5" strokeWidth={1.8} />
