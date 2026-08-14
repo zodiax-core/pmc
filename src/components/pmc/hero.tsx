@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BadgeCheck, Boxes } from "lucide-react";
-import heroHouse from "@/assets/prop-large.jpg";
+import heroHouse from "@/assets/hero-house-img.jpg";
 import { SearchPanel } from "./search-panel";
 import { scrollToId } from "@/lib/scroll";
 import type { SearchState } from "@/lib/listings";
@@ -115,7 +115,7 @@ export function Hero({
           <img
             ref={imgRef}
             src={heroHouse}
-            alt="Contemporary villa with deep terrace in DHA Phase 6, Lahore"
+            alt="Modern travertine and timber residence in DHA Phase 6, Lahore"
             width={1200}
             height={1504}
             className="h-full w-full object-cover will-change-transform"
@@ -131,25 +131,6 @@ export function Hero({
           <div className="absolute right-5 top-5 flex items-center gap-1.5 rounded-[12px] bg-ink/85 px-2.5 py-1.5 text-background backdrop-blur-sm">
             <Boxes className="h-3.5 w-3.5" strokeWidth={2} />
             <span className="text-[11px] font-semibold tracking-[0.06em]">3D AVAILABLE</span>
-          </div>
-
-          <div className="absolute inset-x-5 bottom-5 mx-auto flex max-w-[600px] items-center justify-center gap-3 rounded-[20px] bg-surface-raised/94 px-4 py-3 shadow-lift backdrop-blur-sm sm:inset-x-auto sm:left-1/2 sm:w-[max-content] sm:-translate-x-1/2 sm:gap-4">
-            <span className="flex items-center gap-1.5">
-              <BadgeCheck className="h-3.5 w-3.5 text-brand" strokeWidth={2.2} />
-              <span className="text-[11px] font-semibold tracking-[0.06em] text-ink">
-                PMC VERIFIED
-              </span>
-            </span>
-            <span className="hidden h-4 w-px bg-border sm:block" />
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-[12px] font-medium text-ink-soft">
-              <span>Inspected</span>
-              <span className="text-ink-soft/40">·</span>
-              <span>Documented</span>
-              <span className="text-ink-soft/40">·</span>
-              <span>Modelled in 3D</span>
-            </div>
-            <span className="hidden h-4 w-px bg-border sm:block" />
-            <span className="meta hidden sm:inline">12,480 inspected homes</span>
           </div>
         </div>
       </div>

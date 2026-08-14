@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ChevronRight, Menu, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Home, Menu, Search, X } from "lucide-react";
 import { scrollToId } from "@/lib/scroll";
 
 type NavLink = { label: string; desc?: string; target?: string };
@@ -147,6 +147,29 @@ export function SiteHeader() {
         }`}
       >
         <div className="flex w-full items-center gap-5">
+          {/* Brand */}
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            aria-label="PMC Property — home"
+            className="morph-fast group flex shrink-0 items-center gap-2.5"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-[12px] bg-ink text-background shadow-soft transition-colors duration-500 group-hover:bg-brand">
+              <Home className="h-4.5 w-4.5" strokeWidth={2.1} />
+            </span>
+            <span className="hidden sm:block">
+              <span className="block text-[14.5px] font-semibold leading-none tracking-tight text-ink">
+                PMC
+              </span>
+              <span className="mt-1 block text-[9.5px] font-semibold uppercase tracking-[0.18em] text-ink-soft">
+                Property
+              </span>
+            </span>
+          </a>
+
           {/* Desktop dropdown nav — overlays, never pushes content */}
           <nav className="hidden items-center gap-0.5 md:flex">
             {NAV.map((g) => (

@@ -2,7 +2,7 @@ import { ArrowUpRight, Building2, MapPin, TrendingUp } from "lucide-react";
 import propMed1 from "@/assets/prop-med-1.jpg";
 import propMed2 from "@/assets/prop-med-2.jpg";
 import roomKitchen from "@/assets/room-kitchen.jpg";
-import heroHouse from "@/assets/hero-house.jpg";
+import heroHouse from "@/assets/hero-house-img.jpg";
 
 const PROJECTS = [
   {

@@ -32,7 +32,7 @@ export function AiSearch() {
   return (
     <section className="mx-auto max-w-[1240px] px-4 pb-20 sm:px-6">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
-        <div>
+        <div className="min-w-0">
           <span className="label-eyebrow">Search intelligence</span>
           <h2 className="mt-3 text-[clamp(1.8rem,3.2vw,2.5rem)] leading-[1.03] font-semibold text-ink">
             Say what you mean.
@@ -43,8 +43,8 @@ export function AiSearch() {
           </p>
         </div>
 
-        <div className="rounded-[24px] bg-surface-raised p-2 shadow-soft">
-          <div className="flex items-center gap-3 rounded-[18px] bg-sand/70 px-4 py-3.5">
+        <div className="w-full min-w-0 rounded-[24px] bg-surface-raised p-2 shadow-soft">
+          <div className="flex flex-wrap items-center gap-3 rounded-[18px] bg-sand/70 px-4 py-3.5">
             <Sparkle className="h-4 w-4 shrink-0 text-brand" strokeWidth={2} />
             <p className="min-w-0 flex-1 truncate text-[14px] text-ink">{QUERY}</p>
             <button

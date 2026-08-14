@@ -1,4 +1,12 @@
-import { ArrowUpRight, Play, Smartphone } from "lucide-react";
+import { Play, Smartphone } from "lucide-react";
+import bankAlfalah from "@/assets/partners-logos/bank-alfalah-logo.png";
+import cda from "@/assets/partners-logos/cda-logo.png";
+import faysalBank from "@/assets/partners-logos/faysal-bank-logo.png";
+import habibMetro from "@/assets/partners-logos/Habib-motors.png";
+import lda from "@/assets/partners-logos/Lda-logo.png";
+import meezanBank from "@/assets/partners-logos/meezan-bank-logo.png";
+import plra from "@/assets/partners-logos/plra-logo.png";
+import ubl from "@/assets/partners-logos/ubl-logo.svg";
 
 export function AppCta() {
   return (
@@ -40,14 +48,14 @@ export function AppCta() {
 }
 
 const PARTNERS = [
-  "Meezan Bank",
-  "UBL",
-  "Bank Alfalah",
-  "Faysal Bank",
-  "Habib Metro",
-  "Punjab Land Records",
-  "LDA",
-  "CDA",
+  { name: "Meezan Bank", logo: meezanBank },
+  { name: "UBL", logo: ubl },
+  { name: "Bank Alfalah", logo: bankAlfalah },
+  { name: "Faysal Bank", logo: faysalBank },
+  { name: "Habib Metro", logo: habibMetro },
+  { name: "Punjab Land Records", logo: plra },
+  { name: "LDA", logo: lda },
+  { name: "CDA", logo: cda },
 ] as const;
 
 export function Partners() {
@@ -64,14 +72,18 @@ export function Partners() {
           <span className="meta">Banks · land records · civic authorities</span>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-2.5">
           {PARTNERS.map((p) => (
             <span
-              key={p}
-              className="morph-fast flex items-center gap-2 rounded-[13px] bg-surface-raised px-4 py-2.5 text-[13px] font-semibold text-ink-soft hover:text-ink"
+              key={p.name}
+              title={p.name}
+              className="morph-fast flex h-14 items-center rounded-[14px] bg-surface-raised px-4 shadow-soft hover:shadow-lift"
             >
-              {p}
-              <ArrowUpRight className="h-3.5 w-3.5 text-ink-soft/50" strokeWidth={2.2} />
+              <img
+                src={p.logo}
+                alt={p.name}
+                className="max-h-7 w-auto max-w-[120px] object-contain"
+              />
             </span>
           ))}
         </div>

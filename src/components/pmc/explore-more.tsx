@@ -85,8 +85,7 @@ export function ExploreMore() {
               className="morph-fast group flex flex-col items-center justify-center gap-3 rounded-[22px] bg-surface-raised p-5 text-center shadow-soft hover:bg-ink hover:shadow-lift sm:flex-row sm:items-start sm:justify-start sm:gap-3.5 sm:rounded-[20px] sm:p-4 sm:text-left"
             >
               <span className="morph-fast flex h-14 w-14 shrink-0 items-center justify-center rounded-[18px] bg-sand text-ink group-hover:bg-brand group-hover:text-brand-foreground sm:h-10 sm:w-10 sm:rounded-[13px]">
-                <Icon className="h-6 w-6" strokeWidth={1.9} sm:hidden />
-                <Icon className="hidden h-4.5 w-4.5 sm:block" strokeWidth={1.9} />
+                <Icon className="h-6 w-6 sm:h-4.5 sm:w-4.5" strokeWidth={1.9} />
               </span>
               <span className="min-w-0">
                 <span className="flex items-center justify-center gap-1 text-[13.5px] font-semibold leading-snug text-ink group-hover:text-background sm:justify-start sm:text-[14px]">
