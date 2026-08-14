@@ -199,12 +199,12 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
   return (
     <article
       className={`group relative overflow-hidden rounded-[22px] bg-surface-raised shadow-soft ${
-        grid ? "flex flex-col" : "flex flex-row items-stretch gap-3 p-3 sm:gap-4 sm:p-4"
+        grid ? "flex flex-col" : "flex flex-row items-stretch gap-2 p-2.5 sm:gap-4 sm:p-4"
       }`}
     >
       <div
         className={`relative shrink-0 overflow-hidden ${
-          grid ? "" : "w-28 self-stretch rounded-[14px] sm:w-56"
+          grid ? "" : "w-36 self-stretch rounded-[14px] sm:w-56"
         }`}
       >
         <LazyImage
@@ -250,10 +250,12 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
             </span>
           )}
         </div>
-        <div className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[19px]"}`}>
+        <div
+          className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[17px] sm:text-[19px]"}`}
+        >
           {p.price}
         </div>
-        <div className="mt-2 flex items-center gap-2 text-[12px] font-medium text-ink-soft sm:gap-3">
+        <div className="mt-1.5 flex items-center gap-1.5 text-[11px] font-medium text-ink-soft sm:mt-2 sm:gap-3 sm:text-[12px]">
           {p.beds > 0 && (
             <span className="flex items-center gap-1">
               <Bed className="h-3.5 w-3.5" strokeWidth={1.8} />
