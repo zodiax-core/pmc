@@ -33,6 +33,8 @@ export const DEFAULT_SEARCH: SearchState = {
   deal: "Buy",
 };
 
+export type Seller = { name: string; logo: string };
+
 export type Listing = {
   id: string;
   img: string;
@@ -47,6 +49,7 @@ export type Listing = {
   popularity: number;
   type: "House" | "Apartment" | "Plot" | "Commercial";
   badge?: string;
+  seller?: Seller;
 };
 
 export const LISTINGS: Listing[] = [
@@ -64,6 +67,7 @@ export const LISTINGS: Listing[] = [
     popularity: 98,
     type: "House",
     badge: "PMC INSPECTED",
+    seller: { name: "Zameen Realty", logo: "https://logo.clearbit.com/zameen.com" },
   },
   {
     id: "l2",
@@ -93,6 +97,7 @@ export const LISTINGS: Listing[] = [
     sqft: 1650,
     popularity: 84,
     type: "Apartment",
+    seller: { name: "Century 21", logo: "https://logo.clearbit.com/century21.com" },
   },
   {
     id: "l4",
@@ -122,6 +127,7 @@ export const LISTINGS: Listing[] = [
     popularity: 95,
     type: "House",
     badge: "PMC INSPECTED",
+    seller: { name: "RE/MAX", logo: "https://logo.clearbit.com/remax.com" },
   },
   {
     id: "l6",
@@ -151,6 +157,7 @@ export const LISTINGS: Listing[] = [
     popularity: 82,
     type: "House",
     badge: "NEW TODAY",
+    seller: { name: "PropertyGuru", logo: "https://logo.clearbit.com/propertyguru.com" },
   },
   {
     id: "l8",
@@ -180,6 +187,7 @@ export const LISTINGS: Listing[] = [
     popularity: 92,
     type: "Plot",
     badge: "PMC INSPECTED",
+    seller: { name: "Compass", logo: "https://logo.clearbit.com/compass.com" },
   },
   {
     id: "l10",
@@ -208,6 +216,7 @@ export const LISTINGS: Listing[] = [
     sqft: 2176,
     popularity: 78,
     type: "Plot",
+    seller: { name: "Zillow", logo: "https://logo.clearbit.com/zillow.com" },
   },
   {
     id: "l12",
@@ -223,6 +232,7 @@ export const LISTINGS: Listing[] = [
     popularity: 86,
     type: "Commercial",
     badge: "PMC INSPECTED",
+    seller: { name: "Zameen Realty", logo: "https://logo.clearbit.com/zameen.com" },
   },
   {
     id: "l13",
