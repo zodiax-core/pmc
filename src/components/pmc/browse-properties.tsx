@@ -157,31 +157,36 @@ function SellerBadge({ seller }: { seller?: { name: string; logo: string } }) {
   );
 }
 
-function ListingActions() {
+function ListingActions({ compact }: { compact?: boolean }) {
+  const iconBtn = compact ? "h-8 w-8" : "h-9 w-9";
   return (
-    <div className="flex items-center gap-1.5">
+    <div className={`flex items-center ${compact ? "gap-1" : "gap-1.5"}`}>
       <button
         aria-label="Message seller"
         title="Message"
-        className="morph-fast flex h-9 w-9 items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink"
+        className={`morph-fast flex ${iconBtn} items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink`}
       >
         <MessageCircle className="h-4 w-4" strokeWidth={2} />
       </button>
       <button
         aria-label="Call seller"
         title="Call"
-        className="morph-fast flex h-9 w-9 items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink"
+        className={`morph-fast flex ${iconBtn} items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink`}
       >
         <Phone className="h-4 w-4" strokeWidth={2} />
       </button>
       <button
         aria-label="Chat on WhatsApp"
         title="WhatsApp"
-        className="morph-fast flex h-9 w-9 items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink"
+        className={`morph-fast flex ${iconBtn} items-center justify-center rounded-full bg-sand text-ink hover:bg-sand-deep hover:text-ink`}
       >
         <WhatsAppIcon className="h-4 w-4" />
       </button>
-      <button className="morph-fast ml-auto flex h-9 items-center gap-1.5 rounded-[11px] bg-ink px-3.5 text-[12.5px] font-semibold text-background hover:bg-brand">
+      <button
+        className={`morph-fast ml-auto flex items-center gap-1.5 rounded-[11px] bg-ink text-background hover:bg-brand ${
+          compact ? "h-8 px-3 text-[12px]" : "h-9 px-3.5 text-[12.5px]"
+        } font-semibold`}
+      >
         <Mail className="h-3.5 w-3.5" strokeWidth={2.2} />
         Email
       </button>
@@ -199,7 +204,7 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
     >
       <div
         className={`relative shrink-0 overflow-hidden ${
-          grid ? "" : "w-24 self-stretch rounded-[14px] sm:w-52"
+          grid ? "" : "w-28 self-stretch rounded-[14px] sm:w-56"
         }`}
       >
         <LazyImage
@@ -248,7 +253,7 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
         <div className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[19px]"}`}>
           {p.price}
         </div>
-        <div className="mt-2.5 flex items-center gap-2.5 text-[12px] font-medium text-ink-soft sm:gap-3">
+        <div className="mt-2 flex items-center gap-2 text-[12px] font-medium text-ink-soft sm:gap-3">
           {p.beds > 0 && (
             <span className="flex items-center gap-1">
               <Bed className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -262,13 +267,17 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
             </span>
           )}
           <span className="truncate">{p.area}</span>
-          <span className="ml-auto shrink-0 rounded-[8px] bg-sand px-2 py-0.5 text-[10.5px] font-semibold text-ink-soft">
+          <span
+            className={`ml-auto shrink-0 rounded-[8px] bg-sand px-2 py-0.5 text-[10.5px] font-semibold text-ink-soft ${
+              grid ? "flex" : "hidden sm:flex"
+            }`}
+          >
             {p.type}
           </span>
         </div>
 
         <div className="mt-auto border-t border-border pt-3">
-          <ListingActions />
+          <ListingActions compact={!grid} />
         </div>
       </div>
     </article>
