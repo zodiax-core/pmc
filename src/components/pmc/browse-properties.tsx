@@ -194,12 +194,12 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
   return (
     <article
       className={`group relative overflow-hidden rounded-[22px] bg-surface-raised shadow-soft ${
-        grid ? "flex flex-col" : "flex flex-col gap-4 p-3 sm:flex-row sm:items-stretch sm:p-4"
+        grid ? "flex flex-col" : "flex flex-row items-stretch gap-3 p-3 sm:gap-4 sm:p-4"
       }`}
     >
       <div
-        className={`relative overflow-hidden ${
-          grid ? "" : "w-full shrink-0 rounded-[16px] sm:w-52"
+        className={`relative shrink-0 overflow-hidden ${
+          grid ? "" : "w-24 self-stretch rounded-[14px] sm:w-52"
         }`}
       >
         <LazyImage
@@ -207,10 +207,10 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
           alt={p.alt}
           className="h-full w-full"
           imgClassName={
-            grid ? "aspect-[4/3] group-hover:scale-[1.04]" : "aspect-[16/10] sm:aspect-auto sm:h-40"
+            grid ? "aspect-[4/3] group-hover:scale-[1.04]" : "h-full w-full object-cover"
           }
         />
-        {p.badge && (
+        {p.badge && grid && (
           <span
             className={`absolute left-3 top-3 flex items-center gap-1 rounded-[9px] px-2 py-1 text-[10px] font-semibold tracking-[0.08em] backdrop-blur-sm ${
               p.badge === "PMC INSPECTED"
@@ -223,18 +223,32 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
           </span>
         )}
         <SellerBadge seller={p.seller} />
-        <div className="absolute right-3 top-3">
-          <Saveable />
+        <div className="absolute right-2 top-2">
+          <Saveable expand={grid} />
         </div>
       </div>
 
-      <div className={`flex min-w-0 flex-1 flex-col ${grid ? "p-4" : ""}`}>
+      <div className={`flex min-w-0 flex-1 flex-col ${grid ? "p-4" : "py-0.5"}`}>
         <div className="flex items-center gap-1.5">
           <MapPin className="h-3 w-3 shrink-0 text-ink-soft" strokeWidth={2} />
           <span className="meta truncate">{p.place}</span>
+          {p.badge && !grid && (
+            <span
+              className={`ml-auto flex shrink-0 items-center gap-1 rounded-[8px] px-1.5 py-0.5 text-[9.5px] font-semibold tracking-[0.06em] ${
+                p.badge === "PMC INSPECTED" ? "bg-brand-soft text-brand" : "bg-sand text-ink-soft"
+              }`}
+            >
+              {p.badge === "PMC INSPECTED" && (
+                <BadgeCheck className="h-2.5 w-2.5" strokeWidth={2.4} />
+              )}
+              {p.badge}
+            </span>
+          )}
         </div>
-        <div className="price mt-1 text-[21px] text-ink">{p.price}</div>
-        <div className="mt-2.5 flex items-center gap-3 text-[12px] font-medium text-ink-soft">
+        <div className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[19px]"}`}>
+          {p.price}
+        </div>
+        <div className="mt-2.5 flex items-center gap-2.5 text-[12px] font-medium text-ink-soft sm:gap-3">
           {p.beds > 0 && (
             <span className="flex items-center gap-1">
               <Bed className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -248,7 +262,7 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
             </span>
           )}
           <span className="truncate">{p.area}</span>
-          <span className="ml-auto rounded-[8px] bg-sand px-2 py-0.5 text-[10.5px] font-semibold text-ink-soft">
+          <span className="ml-auto shrink-0 rounded-[8px] bg-sand px-2 py-0.5 text-[10.5px] font-semibold text-ink-soft">
             {p.type}
           </span>
         </div>
@@ -261,7 +275,7 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
   );
 }
 
-function Saveable() {
+function Saveable({ expand }: { expand?: boolean }) {
   const [saved, setSaved] = useState(false);
   return (
     <button
@@ -272,7 +286,9 @@ function Saveable() {
       aria-label={saved ? "Saved" : "Save property"}
       className={`morph flex h-9 items-center justify-center overflow-hidden backdrop-blur-sm ${
         saved
-          ? "w-auto gap-1.5 rounded-full bg-brand px-3 text-brand-foreground"
+          ? expand
+            ? "w-auto gap-1.5 rounded-full bg-brand px-3 text-brand-foreground"
+            : "w-9 rounded-full bg-brand text-brand-foreground"
           : "w-9 rounded-full bg-surface-raised/90 text-ink hover:bg-surface-raised"
       }`}
     >
@@ -282,7 +298,9 @@ function Saveable() {
         <Bookmark className="h-4 w-4" strokeWidth={2} />
       )}
       <span
-        className={`morph text-[11px] font-semibold ${saved ? "max-w-[60px] opacity-100" : "max-w-0 opacity-0"}`}
+        className={`morph text-[11px] font-semibold ${
+          saved && expand ? "max-w-[60px] opacity-100" : "max-w-0 opacity-0"
+        }`}
       >
         Saved
       </span>

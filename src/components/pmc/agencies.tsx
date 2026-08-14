@@ -78,54 +78,57 @@ export function Agencies() {
         {AGENCIES.map((a) => (
           <article
             key={a.name}
-            className="group relative flex flex-col overflow-hidden rounded-[22px] bg-surface-raised shadow-soft transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lift"
+            className="group flex flex-col overflow-hidden rounded-[22px] bg-surface-raised shadow-soft transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lift"
           >
-            {/* Banner — sits behind the logo, text and everything else */}
-            <LazyImage
-              src={a.banner}
-              alt=""
-              className="absolute inset-0 h-full w-full"
-              imgClassName="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/15 to-ink/70" />
-            {a.badge && (
-              <span
-                className={`absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full px-2 py-1 text-[9.5px] font-semibold tracking-[0.08em] backdrop-blur-sm ${
-                  a.badge === "PMC VERIFIED"
-                    ? "bg-brand-soft/95 text-brand"
-                    : "bg-surface-raised/90 text-ink-soft"
-                }`}
-              >
-                {a.badge === "PMC VERIFIED" && <BadgeCheck className="h-3 w-3" strokeWidth={2.4} />}
-                {a.badge}
-              </span>
-            )}
+            {/* Banner header */}
+            <div className="relative h-24 shrink-0 overflow-hidden">
+              <LazyImage
+                src={a.banner}
+                alt=""
+                className="h-24 w-full"
+                imgClassName="object-cover group-hover:scale-[1.03]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-ink/25" />
+              {a.badge && (
+                <span
+                  className={`absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full px-2 py-1 text-[9.5px] font-semibold tracking-[0.08em] backdrop-blur-sm ${
+                    a.badge === "PMC VERIFIED"
+                      ? "bg-brand-soft/95 text-brand"
+                      : "bg-surface-raised/90 text-ink-soft"
+                  }`}
+                >
+                  {a.badge === "PMC VERIFIED" && (
+                    <BadgeCheck className="h-3 w-3" strokeWidth={2.4} />
+                  )}
+                  {a.badge}
+                </span>
+              )}
+            </div>
 
-            <div className="relative z-10 flex flex-1 flex-col p-5">
-              <div className="flex items-end gap-3">
-                <Logo src={a.logo} name={a.name} />
-                <div className="min-w-0 pb-0.5">
-                  <h3 className="truncate text-[16px] font-semibold text-background drop-shadow-sm">
-                    {a.name}
-                  </h3>
-                  <div className="mt-0.5 flex items-center gap-1 text-[12.5px] text-background/75">
-                    <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-                    <span className="truncate">{a.location}</span>
-                  </div>
-                </div>
+            {/* Logo overlapping the banner */}
+            <div className="relative z-10 -mt-8 flex justify-center">
+              <Logo src={a.logo} name={a.name} />
+            </div>
+
+            {/* Content on clean card surface */}
+            <div className="flex flex-1 flex-col items-center px-4 pb-4 pt-2.5 text-center">
+              <h3 className="max-w-full truncate text-[15.5px] font-semibold text-ink">{a.name}</h3>
+              <div className="mt-0.5 flex items-center gap-1 text-[12px] text-ink-soft">
+                <MapPin className="h-3 w-3 shrink-0" strokeWidth={2} />
+                <span className="truncate">{a.location}</span>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-2 rounded-[12px] bg-surface-raised/95 px-3 py-2.5 backdrop-blur-sm">
-                  <Star className="h-4 w-4 fill-warn text-warn" strokeWidth={1} />
-                  <div>
+              <div className="mt-3.5 grid w-full grid-cols-2 gap-2">
+                <div className="flex items-center gap-2 rounded-[12px] bg-sand px-3 py-2.5">
+                  <Star className="h-4 w-4 shrink-0 fill-warn text-warn" strokeWidth={1} />
+                  <div className="min-w-0 text-left">
                     <div className="price text-[15px] leading-none text-ink">{a.rating}</div>
                     <div className="meta mt-0.5">Rating</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-[12px] bg-surface-raised/95 px-3 py-2.5 backdrop-blur-sm">
-                  <Building2 className="h-4 w-4 text-brand" strokeWidth={2} />
-                  <div>
+                <div className="flex items-center gap-2 rounded-[12px] bg-sand px-3 py-2.5">
+                  <Building2 className="h-4 w-4 shrink-0 text-brand" strokeWidth={2} />
+                  <div className="min-w-0 text-left">
                     <div className="price text-[15px] leading-none text-ink">{a.listings}</div>
                     <div className="meta mt-0.5">Listings</div>
                   </div>
@@ -135,7 +138,7 @@ export function Agencies() {
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="morph-fast mt-4 flex items-center justify-center gap-1.5 rounded-[13px] bg-sand px-3 py-2.5 text-[12.5px] font-semibold text-ink hover:bg-ink hover:text-background"
+                className="morph-fast mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-[13px] bg-ink px-3 py-2.5 text-[12.5px] font-semibold text-background hover:bg-brand"
               >
                 <ListChecks className="h-3.5 w-3.5" strokeWidth={2.2} />
                 View agency
