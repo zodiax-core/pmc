@@ -250,6 +250,14 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
             </span>
           )}
         </div>
+        {!grid && (
+          <div className="mt-2 hidden sm:block">
+            <h3 className="text-[15px] font-semibold leading-snug text-ink">{p.title}</h3>
+            <p className="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-ink-soft">
+              {p.desc}
+            </p>
+          </div>
+        )}
         <div
           className={`price mt-1 text-ink ${grid ? "text-[21px]" : "text-[16px] sm:text-[18px]"}`}
         >

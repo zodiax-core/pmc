@@ -48,6 +48,8 @@ export type Listing = {
   sqft: number;
   popularity: number;
   type: "House" | "Apartment" | "Plot" | "Commercial";
+  title: string;
+  desc: string;
   badge?: string;
   seller?: Seller;
 };
@@ -66,6 +68,8 @@ export const LISTINGS: Listing[] = [
     sqft: 2720,
     popularity: 98,
     type: "House",
+    title: "Contemporary 5-Bed Villa",
+    desc: "Inspected 10 Marla corner on a DHA Phase 6 street with a deep terrace, double garage and separate servant quarters.",
     badge: "PMC INSPECTED",
     seller: { name: "Zameen Realty", logo: "https://logo.clearbit.com/zameen.com" },
   },
@@ -82,6 +86,8 @@ export const LISTINGS: Listing[] = [
     sqft: 1904,
     popularity: 90,
     type: "House",
+    title: "Brick Townhouse, 4 Beds",
+    desc: "New today — a 7 Marla Gulberg townhouse with black steel windows, an open-plan ground floor and a garden patio.",
     badge: "NEW TODAY",
   },
   {
@@ -97,6 +103,8 @@ export const LISTINGS: Listing[] = [
     sqft: 1650,
     popularity: 84,
     type: "Apartment",
+    title: "3-Bed Modern Apartment",
+    desc: "Balcony apartment in Askari X with lift access, covered parking and close to the mall.",
     seller: { name: "Century 21", logo: "https://logo.clearbit.com/century21.com" },
   },
   {
@@ -112,6 +120,8 @@ export const LISTINGS: Listing[] = [
     sqft: 5445,
     popularity: 76,
     type: "House",
+    title: "Family Home, 4 Beds",
+    desc: "1 Kanal Bahria Town home with a lit driveway, four spacious bedrooms and a formal lounge.",
   },
   {
     id: "l5",
@@ -126,6 +136,8 @@ export const LISTINGS: Listing[] = [
     sqft: 3264,
     popularity: 95,
     type: "House",
+    title: "Travertine Residence, 5 Beds",
+    desc: "Inspected 12 Marla DHA Phase 8 home with timber detailing, a study and a landscaped rear lawn.",
     badge: "PMC INSPECTED",
     seller: { name: "RE/MAX", logo: "https://logo.clearbit.com/remax.com" },
   },
@@ -142,6 +154,8 @@ export const LISTINGS: Listing[] = [
     sqft: 1800,
     popularity: 88,
     type: "Apartment",
+    title: "Sea-Facing 3-Bed Apartment",
+    desc: "Full-height glazing over the coastline with a modern kitchen and en-suite bathrooms.",
   },
   {
     id: "l7",
@@ -156,6 +170,8 @@ export const LISTINGS: Listing[] = [
     sqft: 2176,
     popularity: 82,
     type: "House",
+    title: "Landscaped 4-Bed Home",
+    desc: "New today — an 8 Marla F-7 home with a bright kitchen, TV lounge and attached terrace.",
     badge: "NEW TODAY",
     seller: { name: "PropertyGuru", logo: "https://logo.clearbit.com/propertyguru.com" },
   },
@@ -172,6 +188,8 @@ export const LISTINGS: Listing[] = [
     sqft: 1050,
     popularity: 71,
     type: "Apartment",
+    title: "Compact 2-Bed Apartment",
+    desc: "Serviced Gulberg IV unit with a fitted kitchen, balcony and easy motorway access.",
   },
   {
     id: "l9",
@@ -186,6 +204,8 @@ export const LISTINGS: Listing[] = [
     sqft: 1360,
     popularity: 92,
     type: "Plot",
+    title: "Verified 5 Marla Plot",
+    desc: "Inspected level plot in DHA Phase 6 with clean records, ready to build.",
     badge: "PMC INSPECTED",
     seller: { name: "Compass", logo: "https://logo.clearbit.com/compass.com" },
   },
@@ -202,6 +222,8 @@ export const LISTINGS: Listing[] = [
     sqft: 2720,
     popularity: 80,
     type: "Plot",
+    title: "10 Marla Park-Front Plot",
+    desc: "Open corner plot fronting a Bahria Town park on a wide, paved street.",
   },
   {
     id: "l11",
@@ -216,6 +238,8 @@ export const LISTINGS: Listing[] = [
     sqft: 2176,
     popularity: 78,
     type: "Plot",
+    title: "Corner 8 Marla Plot",
+    desc: "Gulberg III corner plot in a well-developed block with utilities laid on.",
     seller: { name: "Zillow", logo: "https://logo.clearbit.com/zillow.com" },
   },
   {
@@ -231,6 +255,8 @@ export const LISTINGS: Listing[] = [
     sqft: 9000,
     popularity: 86,
     type: "Commercial",
+    title: "Main-Boulevard Commercial Plaza",
+    desc: "Inspected 4,000 sq ft plaza with direct main-boulevard access and full parking.",
     badge: "PMC INSPECTED",
     seller: { name: "Zameen Realty", logo: "https://logo.clearbit.com/zameen.com" },
   },
@@ -247,6 +273,8 @@ export const LISTINGS: Listing[] = [
     sqft: 4250,
     popularity: 74,
     type: "Commercial",
+    title: "Office Floor with Parking",
+    desc: "3,250 sq ft office with split AC units and allocated parking in Askari X.",
   },
   {
     id: "l14",
@@ -261,6 +289,8 @@ export const LISTINGS: Listing[] = [
     sqft: 3200,
     popularity: 69,
     type: "Commercial",
+    title: "Retail Shop Front",
+    desc: "1,200 sq ft shop on a high-traffic Clifton lane with a storefront and store room.",
   },
 ];
 

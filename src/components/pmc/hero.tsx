@@ -51,7 +51,7 @@ export function Hero({
       card.style.transform = `scale(${(0.84 + 0.16 * t).toFixed(3)})`;
       card.style.borderRadius = `${Math.round(32 * (1 - t))}px`;
       // subtle parallax drift inside the image
-      img.style.transform = `scale(1.12) translateY(${(-t * 90).toFixed(1)}px)`;
+      img.style.transform = `scale(1.12) translateY(${(-t * 24).toFixed(1)}px)`;
     };
 
     const onScroll = () => {
@@ -110,7 +110,7 @@ export function Hero({
       <div ref={stageRef} className="mt-14 h-[170vh]">
         <div
           ref={cardRef}
-          className="sticky top-0 h-[100svh] origin-center overflow-hidden bg-sand shadow-lift will-change-transform"
+          className="sticky top-0 h-[100svh] origin-center overflow-hidden will-change-transform"
         >
           <img
             ref={imgRef}

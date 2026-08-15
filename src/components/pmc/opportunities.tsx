@@ -91,7 +91,7 @@ export function Projects() {
                 <MapPin className="h-3 w-3" strokeWidth={2} />
                 {p.city}
               </div>
-              <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+              <div className="mt-3 flex items-center justify-between pt-3">
                 <div>
                   <div className="meta">Starting from</div>
                   <div className="price text-[17px] text-ink">{p.start}</div>
