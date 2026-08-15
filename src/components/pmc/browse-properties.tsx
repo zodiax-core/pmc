@@ -278,7 +278,7 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
           </span>
         </div>
 
-        <div className="mt-auto border-t border-border pt-3">
+        <div className="mt-auto pt-3">
           <ListingActions compact={!grid} />
         </div>
       </div>
