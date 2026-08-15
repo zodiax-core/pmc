@@ -17,7 +17,7 @@ export function SearchPanel({
 }: {
   value: SearchState;
   onChange: (next: SearchState) => void;
-  onSearch?: () => void;
+  onSearch?: (() => void) | undefined;
 }) {
   const [open, setOpen] = useState<Field>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);

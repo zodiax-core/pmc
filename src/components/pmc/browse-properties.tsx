@@ -3,7 +3,6 @@ import {
   BadgeCheck,
   Bed,
   Bath,
-  Bookmark,
   Check,
   ChevronDown,
   LayoutGrid,
@@ -15,6 +14,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { LazyImage, BrandLogo } from "./image";
+import { Saveable } from "./saveable";
 import {
   LISTINGS,
   filterListings,
@@ -294,39 +294,6 @@ function ListingCard({ p, view }: { p: Listing; view: ViewMode }) {
   );
 }
 
-function Saveable({ expand }: { expand?: boolean }) {
-  const [saved, setSaved] = useState(false);
-  return (
-    <button
-      onClick={(e) => {
-        e.preventDefault();
-        setSaved((s) => !s);
-      }}
-      aria-label={saved ? "Saved" : "Save property"}
-      className={`morph flex h-9 items-center justify-center overflow-hidden backdrop-blur-sm ${
-        saved
-          ? expand
-            ? "w-auto gap-1.5 rounded-full bg-brand px-3 text-brand-foreground"
-            : "w-9 rounded-full bg-brand text-brand-foreground"
-          : "w-9 rounded-full bg-surface-raised/90 text-ink hover:bg-surface-raised"
-      }`}
-    >
-      {saved ? (
-        <Check className="h-4 w-4" strokeWidth={2.6} />
-      ) : (
-        <Bookmark className="h-4 w-4" strokeWidth={2} />
-      )}
-      <span
-        className={`morph text-[11px] font-semibold ${
-          saved && expand ? "max-w-[60px] opacity-100" : "max-w-0 opacity-0"
-        }`}
-      >
-        Saved
-      </span>
-    </button>
-  );
-}
-
 function FilterChip({ label, onClear }: { label: string; onClear: () => void }) {
   return (
     <span className="morph-fast flex items-center gap-1.5 rounded-[10px] bg-ink px-2.5 py-1.5 text-[12px] font-medium text-background">
@@ -468,13 +435,18 @@ export function BrowseProperties({
           />
         </div>
 
-        {/* Grid / list view toggle */}
-        <div className="ml-auto flex items-center gap-1 rounded-[12px] bg-surface-raised p-1 shadow-soft">
+        {/* Grid / list view toggle — sliding pill */}
+        <div className="relative ml-auto flex items-center gap-1 rounded-[12px] bg-surface-raised p-1 shadow-soft">
+          <span
+            aria-hidden
+            className="morph pointer-events-none absolute inset-y-1 left-1 z-0 w-8 rounded-[9px] bg-ink shadow-soft"
+            style={{ transform: `translateX(${view === "grid" ? 0 : 36}px)` }}
+          />
           <button
             aria-label="Grid view"
             onClick={() => setView("grid")}
-            className={`morph-fast flex h-8 w-8 items-center justify-center rounded-[9px] ${
-              view === "grid" ? "bg-ink text-background" : "text-ink-soft hover:text-ink"
+            className={`morph-fast relative z-10 flex h-8 w-8 items-center justify-center rounded-[9px] ${
+              view === "grid" ? "text-background" : "text-ink-soft hover:text-ink"
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" strokeWidth={2} />
@@ -482,8 +454,8 @@ export function BrowseProperties({
           <button
             aria-label="List view"
             onClick={() => setView("list")}
-            className={`morph-fast flex h-8 w-8 items-center justify-center rounded-[9px] ${
-              view === "list" ? "bg-ink text-background" : "text-ink-soft hover:text-ink"
+            className={`morph-fast relative z-10 flex h-8 w-8 items-center justify-center rounded-[9px] ${
+              view === "list" ? "text-background" : "text-ink-soft hover:text-ink"
             }`}
           >
             <List className="h-3.5 w-3.5" strokeWidth={2} />

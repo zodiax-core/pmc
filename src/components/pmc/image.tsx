@@ -1,4 +1,4 @@
-import { useState, type Ref } from "react";
+import { useRef, useState, type Ref } from "react";
 
 type ImageState = "loading" | "loaded" | "error";
 
@@ -18,6 +18,19 @@ export function LazyImage({
   imgRef?: Ref<HTMLImageElement>;
 }) {
   const [state, setState] = useState<ImageState>("loading");
+  const settled = useRef(false);
+
+  const loaded = () => {
+    if (settled.current) return;
+    settled.current = true;
+    setState("loaded");
+  };
+
+  const failed = () => {
+    if (settled.current) return;
+    settled.current = true;
+    setState("error");
+  };
 
   return (
     <div className={`relative overflow-hidden bg-sand ${className ?? ""}`}>
@@ -29,14 +42,21 @@ export function LazyImage({
       )}
       {state !== "error" && (
         <img
-          ref={imgRef}
+          ref={(el) => {
+            if (typeof imgRef === "function") imgRef(el);
+            else if (imgRef) imgRef.current = el;
+            // A cached image may have fired its load event before React attached
+            // the onLoad handler (stale SSR + hydration) — surface it here so the
+            // image never stays stuck invisible at opacity-0.
+            if (el && el.complete && el.naturalWidth > 0) loaded();
+          }}
           src={src}
           alt={alt}
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           {...(eager ? { fetchPriority: "high" as const } : {})}
-          onLoad={() => setState("loaded")}
-          onError={() => setState("error")}
+          onLoad={loaded}
+          onError={failed}
           className={`morph h-full w-full object-cover ${
             state === "loaded" ? "opacity-100" : "opacity-0"
           } ${imgClassName ?? ""}`}

@@ -1,19 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronRight, Home, Menu, Search, X } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { scrollToId } from "@/lib/scroll";
 
-type NavLink = { label: string; desc?: string; target?: string };
-type NavGroup = { label: string; tagline: string; links: NavLink[] };
+type NavLink = { label: string; desc?: string; target?: string; path?: string };
+type NavGroup = { label: string; tagline: string; links: NavLink[]; path?: string };
+
+const toPropsPath = (deal: "Buy" | "Rent", type?: string) =>
+  `/properties?deal=${deal}&beds=Any&price=${encodeURIComponent("Any price")}&type=${type ? encodeURIComponent(type) : "Any"}&area=&page=1&view=grid&sort=popular`;
 
 const NAV: NavGroup[] = [
   {
     label: "Properties",
     tagline: "Inspected · verified · precise",
+    path: toPropsPath("Buy"),
     links: [
-      { label: "Buy", desc: "Houses, apartments & plots", target: "#browse" },
-      { label: "Rent", desc: "Long & short-term rentals", target: "#browse" },
+      { label: "Buy", desc: "Houses, apartments & plots", path: toPropsPath("Buy") },
+      { label: "Rent", desc: "Long & short-term rentals", path: toPropsPath("Rent") },
       { label: "New Projects", desc: "Developments modelled in 3D", target: "#projects" },
-      { label: "Plots", desc: "Verified titles, clear records", target: "#browse" },
+      { label: "Plots", desc: "Verified titles, clear records", path: toPropsPath("Buy", "Plots") },
       { label: "Invest", desc: "Yield-backed opportunities", target: "#invest" },
     ],
   },
@@ -66,6 +71,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
+  const navigate = useNavigate();
 
   const clearCloseTimer = () => {
     if (closeTimer.current) {
@@ -134,7 +140,45 @@ export function SiteHeader() {
     clearCloseTimer();
     setOpen(null);
     setMobileOpen(false);
-    if (target) scrollToId(target);
+    if (!target) return;
+    if (document.querySelector(target)) {
+      scrollToId(target);
+    } else {
+      // Section lives on the home page — jump there; native scroll-margin handles the offset.
+      window.location.href = `/${target}`;
+    }
+  };
+
+  // Client-side navigation to /properties with the filters carried in the path.
+  const navigateTo = (path: string) => {
+    const [to, qs] = path.split("?");
+    if (to === "/properties") {
+      const p = new URLSearchParams(qs ?? "");
+      navigate({
+        to: "/properties",
+        search: {
+          deal: p.get("deal") as "Buy" | "Rent",
+          beds: p.get("beds") ?? "Any",
+          price: p.get("price") ?? "Any price",
+          type: p.get("type") ?? "Any",
+          area: p.get("area") ?? "",
+          page: Number(p.get("page")) || 1,
+          view: (p.get("view") ?? "grid") as "grid" | "list",
+          sort: (p.get("sort") ?? "popular") as "popular" | "price-asc" | "price-desc" | "newest",
+        },
+      });
+    }
+  };
+
+  const goLink = (l: NavLink) => {
+    clearCloseTimer();
+    setOpen(null);
+    setMobileOpen(false);
+    if (l.path) {
+      navigateTo(l.path);
+    } else if (l.target) {
+      go(l.target);
+    }
   };
 
   return (
@@ -180,7 +224,18 @@ export function SiteHeader() {
                 onMouseLeave={closeAfter}
               >
                 <button
-                  onClick={() => (open === g.label ? closeAfter() : openOn(g.label))}
+                  onClick={() => {
+                    if (g.path) {
+                      clearCloseTimer();
+                      setOpen(null);
+                      setMobileOpen(false);
+                      navigateTo(g.path);
+                    } else if (open === g.label) {
+                      closeAfter();
+                    } else {
+                      openOn(g.label);
+                    }
+                  }}
                   aria-expanded={open === g.label}
                   className={`morph-fast flex items-center gap-1 rounded-[10px] px-3 py-1.5 text-[13.5px] font-medium ${
                     open === g.label
@@ -223,10 +278,10 @@ export function SiteHeader() {
                     {g.links.map((l) => (
                       <a
                         key={l.label}
-                        href={l.target ?? "#"}
+                        href={l.path ?? l.target ?? "#"}
                         onClick={(e) => {
                           e.preventDefault();
-                          go(l.target);
+                          goLink(l);
                         }}
                         className="morph-fast group flex items-center gap-3 rounded-[12px] px-2.5 py-2 hover:bg-sand"
                       >
@@ -288,7 +343,7 @@ export function SiteHeader() {
               >
                 <div>
                   {NAV.map((g) => (
-                    <MobileGroup key={g.label} group={g} onGo={go} />
+                    <MobileGroup key={g.label} group={g} onGo={goLink} />
                   ))}
                   <div className="mt-1 flex gap-1.5 border-t border-border pt-2">
                     <button className="morph-fast flex-1 rounded-[11px] px-3 py-2 text-[13px] font-medium text-ink-soft hover:text-ink">
@@ -308,7 +363,7 @@ export function SiteHeader() {
   );
 }
 
-function MobileGroup({ group, onGo }: { group: NavGroup; onGo: (t?: string) => void }) {
+function MobileGroup({ group, onGo }: { group: NavGroup; onGo: (l: NavLink) => void }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div className="overflow-hidden rounded-[12px]">
@@ -331,10 +386,10 @@ function MobileGroup({ group, onGo }: { group: NavGroup; onGo: (t?: string) => v
             {group.links.map((l) => (
               <a
                 key={l.label}
-                href={l.target ?? "#"}
+                href={l.path ?? l.target ?? "#"}
                 onClick={(e) => {
                   e.preventDefault();
-                  onGo(l.target);
+                  onGo(l);
                 }}
                 className="morph-fast flex items-center justify-between rounded-[10px] px-2.5 py-2 text-[13px] text-ink-soft hover:bg-sand hover:text-ink"
               >

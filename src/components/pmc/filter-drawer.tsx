@@ -14,7 +14,7 @@ export function FilterDrawer({
   onChange: (next: SearchState) => void;
   open: boolean;
   onClose: () => void;
-  onSearch?: () => void;
+  onSearch?: (() => void) | undefined;
 }) {
   const matches = countMatches(value);
 

@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { BadgeCheck, Boxes } from "lucide-react";
 import heroHouse from "@/assets/hero-house-opt.jpg";
 import { SearchPanel } from "./search-panel";
-import { scrollToId } from "@/lib/scroll";
 import type { SearchState } from "@/lib/listings";
 
 const STATS = [
@@ -14,9 +13,11 @@ const STATS = [
 export function Hero({
   search,
   onChange,
+  onSearch,
 }: {
   search: SearchState;
   onChange: (next: SearchState) => void;
+  onSearch?: () => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -86,7 +87,7 @@ export function Hero({
         </p>
 
         <div className="mt-9 flex w-full justify-center">
-          <SearchPanel value={search} onChange={onChange} onSearch={() => scrollToId("#browse")} />
+          <SearchPanel value={search} onChange={onChange} onSearch={onSearch} />
         </div>
 
         {/* Stats — centered under the search field */}

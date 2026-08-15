@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/pmc/site-header";
 import { Hero } from "@/components/pmc/hero";
 import { BrowseProperties } from "@/components/pmc/browse-properties";
@@ -40,12 +40,28 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [search, setSearch] = useState<SearchState>(DEFAULT_SEARCH);
+  const navigate = useNavigate();
+
+  const goProperties = () =>
+    navigate({
+      to: "/properties",
+      search: {
+        deal: search.deal,
+        area: search.area,
+        beds: search.beds,
+        price: search.price,
+        type: search.type,
+        page: 1,
+        view: "grid",
+        sort: "popular",
+      },
+    });
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main>
-        <Hero search={search} onChange={setSearch} />
+        <Hero search={search} onChange={setSearch} onSearch={goProperties} />
         <BrowseProperties search={search} onChange={setSearch} />
         <ExploreMore />
         <ServiceRibbon />
