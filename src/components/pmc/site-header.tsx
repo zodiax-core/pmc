@@ -25,11 +25,12 @@ const NAV: NavGroup[] = [
   {
     label: "Services",
     tagline: "Everything after the keys",
+    path: "/services",
     links: [
-      { label: "Cleaning", desc: "Vetted teams, fixed PMC rates", target: "#services" },
-      { label: "Maintenance", desc: "Repairs & upkeep on schedule", target: "#services" },
-      { label: "Renovation", desc: "Quoted, documented, delivered", target: "#services" },
-      { label: "Moving", desc: "Door-to-door, insured", target: "#services" },
+      { label: "Cleaning", desc: "Vetted teams, fixed PMC rates", path: "/services" },
+      { label: "Maintenance", desc: "Repairs & upkeep on schedule", path: "/services" },
+      { label: "Renovation", desc: "Quoted, documented, delivered", path: "/services" },
+      { label: "Moving", desc: "Door-to-door, insured", path: "/services" },
     ],
   },
   {
@@ -38,7 +39,7 @@ const NAV: NavGroup[] = [
     links: [
       { label: "Agencies", desc: "List directly on PMC", target: "#agencies" },
       { label: "Developers", desc: "Projects with digital twins", target: "#projects" },
-      { label: "Providers", desc: "Offer services to owners", target: "#services" },
+      { label: "Providers", desc: "Offer services to owners", path: "/services" },
       { label: "Partners", desc: "Banks, financers, insurers", target: "#partners" },
     ],
   },
@@ -149,9 +150,13 @@ export function SiteHeader() {
     }
   };
 
-  // Client-side navigation to /properties with the filters carried in the path.
+  // Client-side navigation to routed pages (properties / services) with filters carried in the path.
   const navigateTo = (path: string) => {
     const [to, qs] = path.split("?");
+    if (to === "/services") {
+      navigate({ to: "/services" });
+      return;
+    }
     if (to === "/properties") {
       const p = new URLSearchParams(qs ?? "");
       navigate({
@@ -193,9 +198,10 @@ export function SiteHeader() {
         <div className="flex w-full items-center gap-5">
           {/* Brand */}
           <a
-            href="#top"
+            href="/"
             onClick={(e) => {
               e.preventDefault();
+              navigate({ to: "/" });
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             aria-label="PMC Property — home"
@@ -316,7 +322,7 @@ export function SiteHeader() {
               Sign In
             </button>
             <button className="morph-fast hidden rounded-[12px] bg-ink px-3.5 py-2 text-[13px] font-semibold text-background hover:bg-brand sm:block">
-              List Property
+              Join Today
             </button>
 
             {/* Mobile menu */}
@@ -350,7 +356,7 @@ export function SiteHeader() {
                       Sign In
                     </button>
                     <button className="morph-fast flex-1 rounded-[11px] bg-ink px-3 py-2 text-[13px] font-semibold text-background hover:bg-brand">
-                      List Property
+                      Join Today
                     </button>
                   </div>
                 </div>

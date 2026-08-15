@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, Search, SlidersHorizontal } from "lucide-react";
 import { BEDS, DEALS, PRICES, TYPES, type SearchState } from "@/lib/listings";
+import { DEFAULT_SERVICE_SEARCH } from "@/lib/services-search";
 import { FilterDrawer } from "./filter-drawer";
 
 function Select({
@@ -200,8 +201,11 @@ export function PropertySearch({
       </div>
 
       <FilterDrawer
+        mode="property"
         value={value}
+        service={DEFAULT_SERVICE_SEARCH}
         onChange={onChange}
+        onServiceChange={() => {}}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onSearch={onSearch}

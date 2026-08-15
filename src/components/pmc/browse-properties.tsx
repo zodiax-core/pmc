@@ -89,13 +89,13 @@ function DrawerSelect({
         />
       </button>
 
-      {/* Drawer-style panel — slides out left → right from under the trigger */}
-      <div className="absolute left-0 top-[calc(100%+10px)] z-20">
+      {/* Drawer-style panel — slides out right → left from under the trigger */}
+      <div className="absolute right-0 top-[calc(100%+10px)] z-20">
         <div
-          className={`morph origin-left rounded-[16px] bg-surface-raised p-1.5 shadow-lift hairline ${
+          className={`morph origin-right rounded-[16px] bg-surface-raised p-1.5 shadow-lift hairline ${
             open
               ? "pointer-events-auto translate-x-0 scale-x-100 opacity-100"
-              : "pointer-events-none -translate-x-3 scale-x-90 opacity-0"
+              : "pointer-events-none translate-x-3 scale-x-90 opacity-0"
           }`}
         >
           <div

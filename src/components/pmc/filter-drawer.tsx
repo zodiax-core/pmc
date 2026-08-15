@@ -1,28 +1,47 @@
 import { useEffect } from "react";
 import { Check, X } from "lucide-react";
 import { AREAS, TYPES, countMatches, type SearchState } from "@/lib/listings";
+import {
+  SERVICE_AREAS,
+  SERVICE_CATEGORIES,
+  SERVICE_PRICES,
+  countServiceMatches,
+  type ServiceSearchState,
+} from "@/lib/services-search";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
 
+export type SearchMode = "property" | "services";
+
 export function FilterDrawer({
+  mode,
   value,
+  service,
   onChange,
+  onServiceChange,
   open,
   onClose,
   onSearch,
 }: {
+  mode: SearchMode;
   value: SearchState;
+  service: ServiceSearchState;
   onChange: (next: SearchState) => void;
+  onServiceChange: (next: ServiceSearchState) => void;
   open: boolean;
   onClose: () => void;
   onSearch?: (() => void) | undefined;
 }) {
-  const matches = countMatches(value);
+  const propertyMatches = countMatches(value);
+  const serviceMatches = countServiceMatches(service);
 
   useEffect(() => {
     if (open) lockScroll();
     else unlockScroll();
     return () => unlockScroll();
   }, [open]);
+
+  const serviceCategoryActive = (opt: string) => service.category === opt;
+  const pickServiceCategory = (opt: string) => onServiceChange({ ...service, category: opt });
 
   return (
     <div
@@ -50,7 +69,9 @@ export function FilterDrawer({
         <div className="flex items-center justify-between gap-4">
           <div>
             <span className="label-eyebrow">Filters</span>
-            <h3 className="mt-1 text-[19px] leading-none font-semibold text-ink">Deep search</h3>
+            <h3 className="mt-1 text-[19px] leading-none font-semibold text-ink">
+              {mode === "property" ? "Deep search" : "Refine providers"}
+            </h3>
           </div>
           <button
             aria-label="Close filters"
@@ -62,67 +83,161 @@ export function FilterDrawer({
         </div>
 
         <div className="mt-5 min-h-0 flex-1 overflow-y-auto">
-          {/* Where */}
-          <div>
-            <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
-              Where
-            </span>
-            <input
-              value={value.area}
-              onChange={(e) => onChange({ ...value, area: e.target.value })}
-              placeholder="City, area or society"
-              className="mt-2 w-full rounded-[14px] bg-sand/70 px-3.5 py-2.5 text-[13.5px] font-medium text-ink outline-none placeholder:text-ink-soft/70 focus:ring-2 focus:ring-brand/30"
-            />
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {AREAS.map((opt) => {
-                const active = value.area === opt;
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => onChange({ ...value, area: active ? "" : opt })}
-                    className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
-                      active ? "bg-ink text-background" : "bg-sand/70 text-ink-soft hover:text-ink"
-                    }`}
-                  >
-                    {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {mode === "property" ? (
+            <>
+              {/* Where */}
+              <div>
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                  Where
+                </span>
+                <input
+                  value={value.area}
+                  onChange={(e) => onChange({ ...value, area: e.target.value })}
+                  placeholder="City, area or society"
+                  className="mt-2 w-full rounded-[14px] bg-sand/70 px-3.5 py-2.5 text-[13.5px] font-medium text-ink outline-none placeholder:text-ink-soft/70 focus:ring-2 focus:ring-brand/30"
+                />
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {AREAS.map((opt) => {
+                    const active = value.area === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => onChange({ ...value, area: active ? "" : opt })}
+                        className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
+                          active
+                            ? "bg-ink text-background"
+                            : "bg-sand/70 text-ink-soft hover:text-ink"
+                        }`}
+                      >
+                        {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-          {/* Property type */}
-          <div className="mt-6">
-            <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
-              Property type
-            </span>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {TYPES.map((opt) => {
-                const active = value.type === opt;
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => onChange({ ...value, type: opt })}
-                    className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
-                      active ? "bg-ink text-background" : "bg-sand/70 text-ink-soft hover:text-ink"
-                    }`}
-                  >
-                    {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+              {/* Property type */}
+              <div className="mt-6">
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                  Property type
+                </span>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {TYPES.map((opt) => {
+                    const active = value.type === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => onChange({ ...value, type: opt })}
+                        className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
+                          active
+                            ? "bg-ink text-background"
+                            : "bg-sand/70 text-ink-soft hover:text-ink"
+                        }`}
+                      >
+                        {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* City */}
+              <div>
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                  City
+                </span>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {SERVICE_AREAS.map((opt) => {
+                    const active = service.city === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => onServiceChange({ ...service, city: active ? "" : opt })}
+                        className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
+                          active
+                            ? "bg-ink text-background"
+                            : "bg-sand/70 text-ink-soft hover:text-ink"
+                        }`}
+                      >
+                        {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Service category */}
+              <div className="mt-6">
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                  Service category
+                </span>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {SERVICE_CATEGORIES.slice(0, 12).map((opt) => {
+                    const active = serviceCategoryActive(opt);
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => pickServiceCategory(opt)}
+                        className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
+                          active
+                            ? "bg-ink text-background"
+                            : "bg-sand/70 text-ink-soft hover:text-ink"
+                        }`}
+                      >
+                        {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Budget */}
+              <div className="mt-6">
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                  Budget
+                </span>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {SERVICE_PRICES.map((opt) => {
+                    const active = service.price === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => onServiceChange({ ...service, price: opt })}
+                        className={`morph-fast flex items-center gap-1.5 rounded-[11px] px-2.5 py-1.5 text-[12.5px] font-medium ${
+                          active
+                            ? "bg-ink text-background"
+                            : "bg-sand/70 text-ink-soft hover:text-ink"
+                        }`}
+                      >
+                        {active && <Check className="h-3 w-3" strokeWidth={2.6} />}
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4">
-          <span className="meta">{matches} listings match</span>
+          <span className="meta">
+            {mode === "property"
+              ? `${propertyMatches} listings match`
+              : `${serviceMatches} providers match`}
+          </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() =>
-                onChange({ ...value, area: "", beds: "Any", price: "Any price", type: "Any" })
+                mode === "property"
+                  ? onChange({ ...value, area: "", beds: "Any", price: "Any price", type: "Any" })
+                  : onServiceChange({ city: "", group: "", category: "Any service", price: "Any budget" })
               }
               className="morph-fast rounded-[12px] px-3 py-2 text-[12.5px] font-semibold text-ink-soft hover:bg-sand hover:text-ink"
             >

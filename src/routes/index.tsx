@@ -13,6 +13,8 @@ import { Management } from "@/components/pmc/management";
 import { AppCta, Partners } from "@/components/pmc/bottom-ctas";
 import { SiteFooter } from "@/components/pmc/site-footer";
 import { DEFAULT_SEARCH, type SearchState } from "@/lib/listings";
+import { DEFAULT_SERVICE_SEARCH, type ServiceSearchState } from "@/lib/services-search";
+import type { SearchMode } from "@/components/pmc/search-panel";
 import heroHouse from "@/assets/hero-house-opt.jpg";
 
 export const Route = createFileRoute("/")({
@@ -39,29 +41,51 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [mode, setMode] = useState<SearchMode>("property");
   const [search, setSearch] = useState<SearchState>(DEFAULT_SEARCH);
+  const [service, setService] = useState<ServiceSearchState>(DEFAULT_SERVICE_SEARCH);
   const navigate = useNavigate();
 
-  const goProperties = () =>
-    navigate({
-      to: "/properties",
-      search: {
-        deal: search.deal,
-        area: search.area,
-        beds: search.beds,
-        price: search.price,
-        type: search.type,
-        page: 1,
-        view: "grid",
-        sort: "popular",
-      },
-    });
+  const goSearch = () => {
+    if (mode === "property") {
+      navigate({
+        to: "/properties",
+        search: {
+          deal: search.deal,
+          area: search.area,
+          beds: search.beds,
+          price: search.price,
+          type: search.type,
+          page: 1,
+          view: "grid",
+          sort: "popular",
+        },
+      });
+    } else {
+      navigate({
+        to: "/services",
+        search: {
+          city: service.city,
+          category: service.category,
+          price: service.price,
+        },
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main>
-        <Hero search={search} onChange={setSearch} onSearch={goProperties} />
+        <Hero
+          mode={mode}
+          search={search}
+          service={service}
+          onModeChange={setMode}
+          onChange={setSearch}
+          onServiceChange={setService}
+          onSearch={goSearch}
+        />
         <BrowseProperties search={search} onChange={setSearch} />
         <ExploreMore />
         <ServiceRibbon />

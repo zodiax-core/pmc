@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { BadgeCheck, Boxes } from "lucide-react";
 import heroHouse from "@/assets/hero-house-opt.jpg";
-import { SearchPanel } from "./search-panel";
+import { SearchPanel, type SearchMode } from "./search-panel";
 import type { SearchState } from "@/lib/listings";
+import type { ServiceSearchState } from "@/lib/services-search";
 
 const STATS = [
   ["12,480", "Inspected homes"],
@@ -11,12 +12,20 @@ const STATS = [
 ] as const;
 
 export function Hero({
+  mode,
   search,
+  service,
+  onModeChange,
   onChange,
+  onServiceChange,
   onSearch,
 }: {
+  mode: SearchMode;
   search: SearchState;
+  service: ServiceSearchState;
+  onModeChange: (mode: SearchMode) => void;
   onChange: (next: SearchState) => void;
+  onServiceChange: (next: ServiceSearchState) => void;
   onSearch?: () => void;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -87,7 +96,15 @@ export function Hero({
         </p>
 
         <div className="mt-9 flex w-full justify-center">
-          <SearchPanel value={search} onChange={onChange} onSearch={onSearch} />
+          <SearchPanel
+            mode={mode}
+            value={search}
+            service={service}
+            onModeChange={onModeChange}
+            onChange={onChange}
+            onServiceChange={onServiceChange}
+            onSearch={onSearch}
+          />
         </div>
 
         {/* Stats — centered under the search field */}

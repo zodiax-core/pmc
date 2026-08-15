@@ -1,27 +1,50 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { BEDS, DEALS, PRICES, countMatches, type SearchState } from "@/lib/listings";
+import {
+  SERVICE_AREAS,
+  SERVICE_CATEGORIES,
+  SERVICE_PRICES,
+  countServiceMatches,
+  type ServiceSearchState,
+} from "@/lib/services-search";
 import { FilterDrawer } from "./filter-drawer";
 
-type Field = "deal" | "beds" | "price" | null;
+type Field = "deal" | "beds" | "price" | "city" | "category" | "budget" | null;
+
+const MODES = [
+  { id: "property", label: "Property" },
+  { id: "services", label: "Services" },
+] as const;
 
 const PILLS = [
   { id: "projects", label: "Projects" },
   { id: "invest", label: "Invest" },
 ];
 
+export type SearchMode = (typeof MODES)[number]["id"];
+
 export function SearchPanel({
+  mode,
   value,
+  service,
+  onModeChange,
   onChange,
+  onServiceChange,
   onSearch,
 }: {
+  mode: SearchMode;
   value: SearchState;
+  service: ServiceSearchState;
+  onModeChange: (mode: SearchMode) => void;
   onChange: (next: SearchState) => void;
+  onServiceChange: (next: ServiceSearchState) => void;
   onSearch?: (() => void) | undefined;
 }) {
   const [open, setOpen] = useState<Field>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const matches = countMatches(value);
+  const propertyMatches = countMatches(value);
+  const serviceMatches = countServiceMatches(service);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -31,9 +54,9 @@ export function SearchPanel({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const options: Record<
-    Exclude<Field, null>,
-    { list: string[]; chosen: string; pick: (v: string) => void }
+  const propertyOptions: Record<
+    "deal" | "beds" | "price",
+    { list: readonly string[]; chosen: string; pick: (v: string) => void }
   > = {
     deal: {
       list: [...DEALS],
@@ -42,6 +65,32 @@ export function SearchPanel({
     },
     beds: { list: BEDS, chosen: value.beds, pick: (v) => onChange({ ...value, beds: v }) },
     price: { list: PRICES, chosen: value.price, pick: (v) => onChange({ ...value, price: v }) },
+  };
+
+  const serviceOptions: Record<
+    "city" | "category" | "budget",
+    { list: readonly string[]; chosen: string; pick: (v: string) => void }
+  > = {
+    city: {
+      list: ["All cities", ...SERVICE_AREAS],
+      chosen: service.city || "All cities",
+      pick: (v) => onServiceChange({ ...service, city: v === "All cities" ? "" : v }),
+    },
+    category: {
+      list: SERVICE_CATEGORIES,
+      chosen: service.category,
+      pick: (v) => onServiceChange({ ...service, category: v }),
+    },
+    budget: {
+      list: SERVICE_PRICES,
+      chosen: service.price,
+      pick: (v) => onServiceChange({ ...service, price: v }),
+    },
+  };
+
+  const showOptions = (field: Exclude<Field, null>) => {
+    if (mode === "property") return propertyOptions[field as "deal" | "beds" | "price"];
+    return serviceOptions[field as "city" | "category" | "budget"];
   };
 
   const Segment = ({
@@ -82,8 +131,8 @@ export function SearchPanel({
 
   return (
     <div className="w-full max-w-[620px]">
-      {/* Projects / Invest — lead to separate pages */}
-      <div className="mb-2.5 flex items-center justify-center gap-2">
+      {/* Projects / Invest pills + Property / Services switch */}
+      <div className="mb-2.5 flex flex-wrap items-center justify-center gap-2">
         {PILLS.map((p) => (
           <a
             key={p.id}
@@ -97,6 +146,30 @@ export function SearchPanel({
             />
           </a>
         ))}
+
+        {/* Property / Services — morphing segmented switch */}
+        <div className="relative flex rounded-full bg-surface-raised p-1 shadow-soft hairline">
+          <span
+            aria-hidden
+            className="morph pointer-events-none absolute inset-y-1 left-1 z-0 w-[calc((100%-8px)/2)] rounded-full bg-ink shadow-soft"
+            style={{ transform: `translateX(${MODES.findIndex((m) => m.id === mode) * 100}%)` }}
+          />
+          {MODES.map((m) => {
+            const active = mode === m.id;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => onModeChange(m.id)}
+                className={`morph-fast relative z-10 rounded-full px-5 py-1.5 text-[13px] font-semibold ${
+                  active ? "text-background" : "text-ink-soft hover:text-ink"
+                }`}
+              >
+                {m.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div
@@ -105,13 +178,28 @@ export function SearchPanel({
         }`}
       >
         <div className="flex items-stretch gap-0.5">
-          <Segment id="deal" label="Type" value={value.deal} grow />
-          <span className="my-2 w-px bg-border" />
-          <Segment id="beds" label="Beds" value={value.beds} />
-          <span className="my-2 hidden w-px bg-border sm:block" />
-          <div className="hidden sm:contents">
-            <Segment id="price" label="Price" value={value.price} />
-          </div>
+          {mode === "property" ? (
+            <>
+              <Segment id="deal" label="Type" value={value.deal} grow />
+              <span className="my-2 w-px bg-border" />
+              <Segment id="beds" label="Beds" value={value.beds} />
+              <span className="my-2 hidden w-px bg-border sm:block" />
+              <div className="hidden sm:contents">
+                <Segment id="price" label="Price" value={value.price} />
+              </div>
+            </>
+          ) : (
+            <>
+              <Segment id="city" label="City" value={service.city || "All cities"} grow />
+              <span className="my-2 w-px bg-border" />
+              <Segment id="category" label="Service" value={service.category} />
+              <span className="my-2 hidden w-px bg-border sm:block" />
+              <div className="hidden sm:contents">
+                <Segment id="budget" label="Budget" value={service.price} />
+              </div>
+            </>
+          )}
+
           <button
             aria-label="Open filters"
             aria-expanded={drawerOpen}
@@ -123,7 +211,7 @@ export function SearchPanel({
             <SlidersHorizontal className="h-4 w-4" strokeWidth={2.1} />
           </button>
           <button
-            aria-label="Search properties"
+            aria-label="Search"
             onClick={onSearch}
             className="morph-fast ml-0.5 flex h-auto w-11 shrink-0 items-center justify-center rounded-[14px] bg-brand text-brand-foreground hover:bg-ink"
           >
@@ -138,15 +226,18 @@ export function SearchPanel({
           <div className="min-h-0">
             <div className="rounded-[15px] bg-sand/60 p-2">
               {open && (
-                <div key={open} className="animate-in fade-in slide-in-from-top-1 duration-300">
+                <div
+                  key={`${mode}-${open}`}
+                  className="animate-in fade-in slide-in-from-top-1 duration-300"
+                >
                   <div className="flex flex-wrap gap-1.5">
-                    {options[open]!.list.map((opt) => {
-                      const active = options[open!].chosen === opt;
+                    {showOptions(open)!.list.map((opt) => {
+                      const active = showOptions(open!).chosen === opt;
                       return (
                         <button
                           key={opt}
                           onClick={() => {
-                            options[open!].pick(opt);
+                            showOptions(open!).pick(opt);
                             setOpen(null);
                           }}
                           className={`morph-fast flex items-center gap-1.5 rounded-[10px] px-2.5 py-1.5 text-[12.5px] font-medium ${
@@ -165,7 +256,11 @@ export function SearchPanel({
               )}
 
               <div className="mt-2 pb-0.5 px-1 text-left">
-                <span className="meta">{matches} listings match</span>
+                <span className="meta">
+                  {mode === "property"
+                    ? `${propertyMatches} listings match`
+                    : `${serviceMatches} providers match`}
+                </span>
               </div>
             </div>
           </div>
@@ -173,8 +268,11 @@ export function SearchPanel({
       </div>
 
       <FilterDrawer
+        mode={mode}
         value={value}
+        service={service}
         onChange={onChange}
+        onServiceChange={onServiceChange}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onSearch={onSearch}
